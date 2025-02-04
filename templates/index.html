@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center py-5">
+    <h1 class="display-4 mb-4">Welcome to Paris Bridal Registry</h1>
+    <p class="lead mb-5">Create and share your perfect wedding registry with loved ones</p>
+    
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <img src="https://images.unsplash.com/photo-1521478706270-f2e33c203d95" 
+                 alt="Wedding Gifts" 
+                 class="img-fluid rounded shadow">
+        </div>
+        <div class="col-md-6">
+            <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce" 
+                 alt="Wedding Celebration" 
+                 class="img-fluid rounded shadow">
+        </div>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <i class="fas fa-gift fa-2x mb-3 text-primary"></i>
+                    <h3 class="card-title">Create Your Registry</h3>
+                    <p class="card-text">Add your dream gifts from Amazon or custom items to your registry</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <i class="fas fa-share-alt fa-2x mb-3 text-primary"></i>
+                    <h3 class="card-title">Share with Guests</h3>
+                    <p class="card-text">Share your registry easily with friends and family</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <i class="fas fa-shopping-cart fa-2x mb-3 text-primary"></i>
+                    <h3 class="card-title">Easy Purchasing</h3>
+                    <p class="card-text">Guests can easily purchase gifts through Amazon</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if not current_user.is_authenticated %}
+    <div class="mt-5">
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg me-3">Create Your Registry</a>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-lg">Sign In</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

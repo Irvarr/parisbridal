@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="card-title">Add New Item</h3>
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.name.label(class="form-label") }}
+                        {{ form.name(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.description.label(class="form-label") }}
+                        {{ form.description(class="form-control", rows=3) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.price.label(class="form-label") }}
+                        {{ form.price(class="form-control", type="number", step="0.01") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.amazon_url.label(class="form-label") }}
+                        {{ form.amazon_url(class="form-control") }}
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Add Item</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <h2 class="mb-4">{{ registry.title }}</h2>
+        <div class="registry-items">
+            {% if registry.items %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in registry.items %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ item.name }}</strong>
+                                        {% if item.description %}
+                                            <br>
+                                            <small class="text-muted">{{ item.description }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>${{ "%.2f"|format(item.price) if item.price else "N/A" }}</td>
+                                    <td>
+                                        {% if item.is_purchased %}
+                                            <span class="badge bg-success">Purchased</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Available</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-danger" 
+                                                    onclick="deleteItem({{ item.id }})">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                            {% if item.amazon_url %}
+                                                <a href="{{ item.amazon_url }}" 
+                                                   class="btn btn-sm btn-outline-primary" 
+                                                   target="_blank">
+                                                    <i class="fab fa-amazon"></i>
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    No items in your registry yet. Add your first item using the form.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

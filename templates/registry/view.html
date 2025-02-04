@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="registry-details mb-4">
+    <h1 class="display-5 mb-3">{{ registry.title }}</h1>
+    <p class="lead">{{ registry.description }}</p>
+    <p class="text-muted">Created by {{ registry.user.name }}</p>
+</div>
+
+<div class="share-buttons mb-4">
+    <h4 class="mb-3">Share This Registry</h4>
+    <div class="d-flex gap-2">
+        <button class="btn btn-outline-primary" onclick="shareOnFacebook()">
+            <i class="fab fa-facebook-f"></i> Share
+        </button>
+        <button class="btn btn-outline-primary" onclick="shareOnWhatsApp()">
+            <i class="fab fa-whatsapp"></i> Share
+        </button>
+        <button class="btn btn-outline-primary" onclick="copyLink()">
+            <i class="fas fa-link"></i> Copy Link
+        </button>
+    </div>
+</div>
+
+<div class="registry-items">
+    <h3 class="mb-4">Registry Items</h3>
+    {% if registry.items %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for item in registry.items %}
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.name }}</h5>
+                            <p class="card-text">{{ item.description }}</p>
+                            {% if item.price %}
+                                <p class="card-text"><strong>Price:</strong> ${{ "%.2f"|format(item.price) }}</p>
+                            {% endif %}
+                            {% if item.amazon_url %}
+                                <a href="{{ item.amazon_url }}" class="btn btn-primary" target="_blank">
+                                    <i class="fab fa-amazon"></i> View on Amazon
+                                </a>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">Status: 
+                                {% if item.is_purchased %}
+                                    <span class="text-success">Purchased</span>
+                                {% else %}
+                                    <span class="text-warning">Available</span>
+                                {% endif %}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted">No items have been added to this registry yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/registry.js') }}"></script>
+{% endblock %}

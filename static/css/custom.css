@@ -1,0 +1,191 @@
+/* Custom CSS for Paris Bridal Registry */
+
+/* Global Styles */
+:root {
+    --romantic-pink: rgba(255, 182, 193, 0.15);
+    --elegant-gold: rgba(255, 215, 0, 0.15);
+    --soft-white: rgba(255, 255, 255, 0.9);
+}
+
+/* Typography Enhancements */
+h1, h2, h3, .display-4 {
+    font-family: 'Playfair Display', Georgia, serif;
+    letter-spacing: 0.5px;
+}
+
+.lead {
+    font-family: 'Open Sans', sans-serif;
+    line-height: 1.8;
+}
+
+/* Elegant Card Styling */
+.card {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Romantic Accents */
+.navbar-brand {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 600;
+}
+
+.navbar-brand i {
+    color: var(--bs-primary);
+}
+
+/* Registry Item Styling */
+.registry-items .card {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.registry-items .card-body {
+    position: relative;
+}
+
+/* Decorative Elements */
+.display-4::after {
+    content: '';
+    display: block;
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--bs-primary), transparent);
+    margin: 20px auto;
+}
+
+/* Form Styling */
+.form-control {
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.2rem var(--romantic-pink);
+}
+
+/* Button Enhancements */
+.btn {
+    border-radius: 8px;
+    padding: 0.5rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, var(--bs-primary), var(--bs-primary-rgb));
+    border: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(var(--bs-primary-rgb), 0.3);
+}
+
+/* Share Buttons */
+.share-buttons .btn {
+    width: 120px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .share-buttons .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Wedding Date Styling */
+.form-control[type="date"] {
+    color-scheme: dark;
+}
+
+/* Table Styling */
+.table {
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.table tbody tr {
+    background: rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Alert Styling */
+.alert {
+    border-radius: 10px;
+    border: none;
+    backdrop-filter: blur(10px);
+}
+
+/* Footer Enhancement */
+footer {
+    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.3));
+    backdrop-filter: blur(10px);
+}
+
+/* Image Container Styling */
+.img-fluid {
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+.img-fluid:hover {
+    transform: scale(1.02);
+}
+
+/* Card Grid Layout */
+.row.g-4 > [class*='col-'] {
+    display: flex;
+    flex-direction: column;
+}
+
+.card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Registry Status Badges */
+.badge {
+    padding: 0.5em 1em;
+    font-weight: normal;
+    letter-spacing: 0.5px;
+}
+
+/* Transitions */
+.registry-details, .share-buttons, .registry-items {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
