@@ -17,20 +17,31 @@ def index():
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
-    
+
     form = RegisterForm()
     if form.validate_on_submit():
+        # Check if user already exists
+        existing_user = User.query.filter_by(email=form.email.data).first()
+        if existing_user:
+            flash('Email address already registered', 'error')
+            return render_template('auth/register.html', form=form)
+
         user = User(
             name=form.name.data,
             email=form.email.data,
             wedding_date=form.wedding_date.data
         )
         user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash('Registration successful!', 'success')
-        return redirect(url_for('auth.login'))
-    
+        try:
+            db.session.add(user)
+            db.session.commit()
+            flash('Registration successful! Please login.', 'success')
+            return redirect(url_for('auth.login'))
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred during registration. Please try again.', 'error')
+            return render_template('auth/register.html', form=form)
+
     return render_template('auth/register.html', form=form)
 
 @auth.route('/login', methods=['GET', 'POST'])
