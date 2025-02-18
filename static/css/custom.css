@@ -277,3 +277,47 @@ footer {
     transform: scale(1.02);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
+
+/* Service items styling */
+.service-item {
+    background: rgba(var(--bs-primary-rgb), 0.1);
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid rgba(var(--bs-primary-rgb), 0.2);
+}
+
+.service-item:hover {
+    background: rgba(var(--bs-primary-rgb), 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.service-item i {
+    color: var(--bs-primary);
+    font-size: 1.2em;
+}
+
+/* Location badge enhancement */
+.location-badge:hover {
+    background: rgba(var(--bs-primary-rgb), 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    color: inherit;
+}
+
+/* Enhanced image styling */
+.shadow-lg {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Mobile responsiveness for service items */
+@media (max-width: 768px) {
+    .service-item {
+        font-size: 0.9rem;
+        padding: 0.75rem;
+    }
+}
