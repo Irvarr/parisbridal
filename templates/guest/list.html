@@ -51,16 +51,16 @@
                             </td>
                             <td>
                                 <div class="btn-group">
-                                    {% if guest.rsvp_status == 'pending' %}
-                                        <a href="{{ url_for('guest.update_rsvp', guest_id=guest.id, status='attending') }}" 
-                                           class="btn btn-sm btn-success">
-                                            <i class="fas fa-check"></i>
-                                        </a>
-                                        <a href="{{ url_for('guest.update_rsvp', guest_id=guest.id, status='not_attending') }}" 
-                                           class="btn btn-sm btn-danger">
-                                            <i class="fas fa-times"></i>
-                                        </a>
-                                    {% endif %}
+                                    <a href="{{ url_for('guest.update_rsvp', guest_id=guest.id, status='attending') }}" 
+                                       class="btn btn-sm {{ 'btn-success' if guest.rsvp_status == 'attending' else 'btn-outline-success' }}"
+                                       title="Mark as Attending">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                    <a href="{{ url_for('guest.update_rsvp', guest_id=guest.id, status='not_attending') }}" 
+                                       class="btn btn-sm {{ 'btn-danger' if guest.rsvp_status == 'not_attending' else 'btn-outline-danger' }}"
+                                       title="Mark as Not Attending">
+                                        <i class="fas fa-times"></i>
+                                    </a>
                                 </div>
                             </td>
                         </tr>
