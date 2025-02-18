@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Purchase Gift</h2>
+                    
+                    <div class="mb-4">
+                        <h5>Item Details</h5>
+                        <p><strong>{{ item.name }}</strong></p>
+                        <p>{{ item.description }}</p>
+                        {% if item.price %}
+                            <p>Price: ${{ "%.2f"|format(item.price) }}</p>
+                        {% endif %}
+                    </div>
+
+                    {% if item.amazon_url %}
+                        <div class="mb-4">
+                            <a href="{{ item.amazon_url }}" target="_blank" class="btn btn-primary btn-lg w-100">
+                                <i class="fab fa-amazon me-2"></i>Purchase on Amazon
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    <form method="POST" class="mt-4">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            {{ form.purchased_by.label(class="form-label") }}
+                            {{ form.purchased_by(class="form-control") }}
+                            {% for error in form.purchased_by.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            {{ form.ship_to_couple(class="form-check-input") }}
+                            {{ form.ship_to_couple.label(class="form-check-label") }}
+                        </div>
+
+                        <div class="mb-3" id="shippingAddressField">
+                            {{ form.shipping_address.label(class="form-label") }}
+                            {{ form.shipping_address(class="form-control", rows=3) }}
+                            {% for error in form.shipping_address.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                Mark as Purchased
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const shipToCoupleCheckbox = document.getElementById('ship_to_couple');
+    const shippingAddressField = document.getElementById('shippingAddressField');
+    
+    function updateShippingAddress() {
+        shippingAddressField.style.display = shipToCoupleCheckbox.checked ? 'none' : 'block';
+    }
+    
+    shipToCoupleCheckbox.addEventListener('change', updateShippingAddress);
+    updateShippingAddress();
+});
+</script>
+{% endblock %}
+{% endblock %}

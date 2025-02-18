@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, DateField, TextAreaField, BooleanField, FloatField
+from wtforms import StringField, PasswordField, DateField, TextAreaField, BooleanField, FloatField, SearchField
 from wtforms.validators import DataRequired, Email, Length, URL, Optional
 
 class RegisterForm(FlaskForm):
@@ -22,3 +22,11 @@ class RegistryItemForm(FlaskForm):
     description = TextAreaField('Description')
     price = FloatField('Price', validators=[Optional()])
     amazon_url = StringField('Amazon URL', validators=[Optional(), URL()])
+
+class RegistrySearchForm(FlaskForm):
+    search = SearchField('Search by couple name or email', validators=[DataRequired()])
+
+class PurchaseForm(FlaskForm):
+    purchased_by = StringField('Your Name', validators=[DataRequired()])
+    ship_to_couple = BooleanField('Ship to Couple', default=True)
+    shipping_address = TextAreaField('Shipping Address', validators=[Optional()])

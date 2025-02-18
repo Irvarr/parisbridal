@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
+from datetime import datetime
 from app import db
 from models import User, Registry, RegistryItem
-from forms import RegisterForm, LoginForm, RegistryForm, RegistryItemForm
+from forms import RegisterForm, LoginForm, RegistryForm, RegistryItemForm, RegistrySearchForm, PurchaseForm
 
 main = Blueprint('main', __name__)
 auth = Blueprint('auth', __name__, url_prefix='/auth')
@@ -10,7 +11,27 @@ registry = Blueprint('registry', __name__, url_prefix='/registry')
 
 @main.route('/')
 def index():
-    return render_template('index.html')
+    search_form = RegistrySearchForm()
+    return render_template('index.html', search_form=search_form)
+
+@main.route('/search')
+def search():
+    query = request.args.get('search', '').strip()
+    if not query:
+        return redirect(url_for('main.index'))
+
+    # Search for users by name or email
+    users = User.query.filter(
+        (User.name.ilike(f'%{query}%')) | (User.email.ilike(f'%{query}%'))
+    ).all()
+
+    # Get public registries for found users
+    registries = []
+    for user in users:
+        if user.registry and user.registry.is_public:
+            registries.append(user.registry)
+
+    return render_template('registry/search_results.html', registries=registries, query=query)
 
 # Auth routes
 @auth.route('/register', methods=['GET', 'POST'])
@@ -117,3 +138,28 @@ def edit(registry_id):
         return redirect(url_for('registry.edit', registry_id=registry_id))
     
     return render_template('registry/edit.html', registry=registry, form=form)
+
+@registry.route('/item/<int:item_id>/purchase', methods=['GET', 'POST'])
+def purchase(item_id):
+    item = RegistryItem.query.get_or_404(item_id)
+    if item.is_purchased:
+        flash('This item has already been purchased', 'warning')
+        return redirect(url_for('registry.view', registry_id=item.registry_id))
+
+    form = PurchaseForm()
+    if form.validate_on_submit():
+        item.is_purchased = True
+        item.purchased_by = form.purchased_by.data
+        item.ship_to_couple = form.ship_to_couple.data
+        item.shipping_address = form.shipping_address.data if not form.ship_to_couple.data else None
+        item.purchase_date = datetime.utcnow()
+
+        try:
+            db.session.commit()
+            flash('Thank you for your purchase!', 'success')
+            return redirect(url_for('registry.view', registry_id=item.registry_id))
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred. Please try again.', 'error')
+
+    return render_template('registry/purchase.html', form=form, item=item)

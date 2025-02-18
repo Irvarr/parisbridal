@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Search Results for "{{ query }}"</h2>
+    
+    {% if registries %}
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for registry in registries %}
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ registry.title }}</h5>
+                            <p class="card-text">{{ registry.description }}</p>
+                            <p class="card-text">
+                                <small class="text-muted">Created by {{ registry.user.name }}</small>
+                            </p>
+                            <a href="{{ url_for('registry.view', registry_id=registry.id) }}" 
+                               class="btn btn-primary">View Registry</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No public registries found for "{{ query }}". Please try another search term.
+        </div>
+    {% endif %}
+    
+    <div class="mt-4">
+        <a href="{{ url_for('main.index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Home
+        </a>
+    </div>
+</div>
+{% endblock %}
