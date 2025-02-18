@@ -331,3 +331,50 @@ def delete_party_member(member_id):
     db.session.commit()
     flash('Wedding party member removed successfully.', 'success')
     return redirect(url_for('guest.wedding_party'))
+
+# Add these new routes after the existing guest routes
+@guest.route('/<int:guest_id>/update-count', methods=['POST'])
+@login_required
+def update_guest_count(guest_id):
+    guest = Guest.query.get_or_404(guest_id)
+    if guest.user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    data = request.get_json()
+    count = data.get('count', 1)
+
+    if count < 1:
+        return jsonify({'error': 'Guest count must be at least 1'}), 400
+
+    guest.number_of_guests = count
+    db.session.commit()
+    return jsonify({'success': True})
+
+@guest.route('/<int:guest_id>/update-table', methods=['POST'])
+@login_required
+def update_table_assignment(guest_id):
+    guest = Guest.query.get_or_404(guest_id)
+    if guest.user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    data = request.get_json()
+    table = data.get('table')
+    guest.table_assignment = table
+    db.session.commit()
+    return jsonify({'success': True})
+
+@guest.route('/<int:guest_id>/update-meal', methods=['POST'])
+@login_required
+def update_meal_choice(guest_id):
+    guest = Guest.query.get_or_404(guest_id)
+    if guest.user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    data = request.get_json()
+    meal = data.get('meal')
+    if meal not in ['no_preference', 'chicken', 'salmon', 'steak', 'vegan']:
+        return jsonify({'error': 'Invalid meal choice'}), 400
+
+    guest.meal_choice = meal
+    db.session.commit()
+    return jsonify({'success': True})

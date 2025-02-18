@@ -36,20 +36,50 @@
                                     <div>{{ guest.phone }}</div>
                                 {% endif %}
                             </td>
-                            <td>{{ guest.number_of_guests }}</td>
                             <td>
-                                {% if guest.table_assignment %}
-                                    {{ guest.table_assignment }}
-                                {% else %}
-                                    <span class="text-muted">Not assigned</span>
-                                {% endif %}
+                                <div class="input-group input-group-sm">
+                                    <button class="btn btn-outline-secondary btn-sm" onclick="updateGuestCount({{ guest.id }}, -1)">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <span class="form-control text-center" id="guest-count-{{ guest.id }}">
+                                        {{ guest.number_of_guests }}
+                                    </span>
+                                    <button class="btn btn-outline-secondary btn-sm" onclick="updateGuestCount({{ guest.id }}, 1)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
                             </td>
                             <td>
-                                {% if guest.meal_choice %}
-                                    {{ guest.meal_choice|replace('_', ' ')|title }}
-                                {% else %}
-                                    <span class="text-muted">No preference</span>
-                                {% endif %}
+                                <select class="form-select form-select-sm" 
+                                        onchange="updateTableAssignment({{ guest.id }}, this.value)">
+                                    <option value="">Select Table</option>
+                                    {% for i in range(1, 21) %}
+                                        <option value="Table {{ i }}" 
+                                                {% if guest.table_assignment == 'Table ' ~ i %}selected{% endif %}>
+                                            Table {{ i }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-select form-select-sm"
+                                        onchange="updateMealChoice({{ guest.id }}, this.value)">
+                                    <option value="no_preference" {% if guest.meal_choice == 'no_preference' %}selected{% endif %}>
+                                        No Preference
+                                    </option>
+                                    <option value="chicken" {% if guest.meal_choice == 'chicken' %}selected{% endif %}>
+                                        Chicken
+                                    </option>
+                                    <option value="salmon" {% if guest.meal_choice == 'salmon' %}selected{% endif %}>
+                                        Salmon
+                                    </option>
+                                    <option value="steak" {% if guest.meal_choice == 'steak' %}selected{% endif %}>
+                                        Steak
+                                    </option>
+                                    <option value="vegan" {% if guest.meal_choice == 'vegan' %}selected{% endif %}>
+                                        Vegan
+                                    </option>
+                                </select>
                             </td>
                             <td>
                                 <span class="badge bg-{{ 'success' if guest.rsvp_status == 'attending' 
@@ -90,4 +120,48 @@
         </div>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function updateGuestCount(guestId, change) {
+    const countElement = document.getElementById(`guest-count-${guestId}`);
+    const currentCount = parseInt(countElement.textContent);
+    const newCount = Math.max(1, currentCount + change);  // Ensure count doesn't go below 1
+
+    fetch(`/guest/${guestId}/update-count`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ count: newCount })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            countElement.textContent = newCount;
+        }
+    });
+}
+
+function updateTableAssignment(guestId, table) {
+    fetch(`/guest/${guestId}/update-table`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ table: table })
+    });
+}
+
+function updateMealChoice(guestId, meal) {
+    fetch(`/guest/${guestId}/update-meal`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ meal: meal })
+    });
+}
+</script>
 {% endblock %}
