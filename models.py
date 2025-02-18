@@ -18,6 +18,7 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     registry = db.relationship('Registry', backref='user', uselist=False)
     guests = db.relationship('Guest', backref='user', lazy=True)
+    wedding_party = db.relationship('WeddingPartyMember', backref='user', lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -66,3 +67,14 @@ class Guest(db.Model):
     notes = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class WeddingPartyMember(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    role_type = db.Column(db.String(20), nullable=False)  # 'bridesmaid', 'groomsman', 'sponsor'
+    role_title = db.Column(db.String(50))  # e.g., 'Maid of Honor', 'Best Man', 'Primary Sponsor'
+    phone = db.Column(db.String(20))
+    email = db.Column(db.String(120))
+    notes = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)

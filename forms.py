@@ -54,3 +54,18 @@ class GuestForm(FlaskForm):
     number_of_guests = StringField('Number of Guests', validators=[DataRequired()], default=1)
     dietary_restrictions = TextAreaField('Dietary Restrictions')
     notes = TextAreaField('Additional Notes')
+
+class WeddingPartyMemberForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired(), Length(max=100)])
+    role_type = SelectField('Role Type', 
+        choices=[
+            ('bridesmaid', 'Bridesmaid'),
+            ('groomsman', 'Groomsman'),
+            ('sponsor', 'Padrino/Madrina/Sponsor')
+        ],
+        validators=[DataRequired()]
+    )
+    role_title = StringField('Special Title (e.g., Maid of Honor, Best Man)', validators=[Optional(), Length(max=50)])
+    email = StringField('Email', validators=[Optional(), Email()])
+    phone = StringField('Phone', validators=[Optional(), Length(max=20)])
+    notes = TextAreaField('Notes')

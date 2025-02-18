@@ -2,8 +2,8 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request,
 from flask_login import login_user, logout_user, login_required, current_user
 from datetime import datetime
 from app import db
-from models import User, Registry, RegistryItem, Guest #Added Guest import
-from forms import RegisterForm, LoginForm, RegistryForm, RegistryItemForm, RegistrySearchForm, PurchaseForm, GuestForm # Added GuestForm import
+from models import User, Registry, RegistryItem, Guest, WeddingPartyMember
+from forms import RegisterForm, LoginForm, RegistryForm, RegistryItemForm, RegistrySearchForm, PurchaseForm, GuestForm, WeddingPartyMemberForm
 
 main = Blueprint('main', __name__)
 auth = Blueprint('auth', __name__, url_prefix='/auth')
@@ -242,3 +242,59 @@ def update_rsvp(guest_id, status):
         db.session.commit()
         flash('RSVP status updated!', 'success')
     return redirect(url_for('guest.list_guests'))
+
+@guest.route('/wedding-party')
+@login_required
+def wedding_party():
+    bridesmaids = WeddingPartyMember.query.filter_by(
+        user_id=current_user.id, 
+        role_type='bridesmaid'
+    ).order_by(WeddingPartyMember.created_at).all()
+
+    groomsmen = WeddingPartyMember.query.filter_by(
+        user_id=current_user.id, 
+        role_type='groomsman'
+    ).order_by(WeddingPartyMember.created_at).all()
+
+    sponsors = WeddingPartyMember.query.filter_by(
+        user_id=current_user.id, 
+        role_type='sponsor'
+    ).order_by(WeddingPartyMember.created_at).all()
+
+    return render_template('guest/wedding_party.html',
+                         bridesmaids=bridesmaids,
+                         groomsmen=groomsmen,
+                         sponsors=sponsors)
+
+@guest.route('/wedding-party/add', methods=['GET', 'POST'])
+@login_required
+def add_party_member():
+    form = WeddingPartyMemberForm()
+    if form.validate_on_submit():
+        member = WeddingPartyMember(
+            user_id=current_user.id,
+            name=form.name.data,
+            role_type=form.role_type.data,
+            role_title=form.role_title.data,
+            email=form.email.data,
+            phone=form.phone.data,
+            notes=form.notes.data
+        )
+        db.session.add(member)
+        db.session.commit()
+        flash('Wedding party member added successfully!', 'success')
+        return redirect(url_for('guest.wedding_party'))
+    return render_template('guest/add_party_member.html', form=form)
+
+@guest.route('/wedding-party/<int:member_id>/delete', methods=['POST'])
+@login_required
+def delete_party_member(member_id):
+    member = WeddingPartyMember.query.get_or_404(member_id)
+    if member.user_id != current_user.id:
+        flash('You are not authorized to delete this member.', 'error')
+        return redirect(url_for('guest.wedding_party'))
+
+    db.session.delete(member)
+    db.session.commit()
+    flash('Wedding party member removed successfully.', 'success')
+    return redirect(url_for('guest.wedding_party'))

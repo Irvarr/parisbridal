@@ -44,20 +44,25 @@
                     </div>
 
                     <div class="text-center mt-4">
-                        <a href="{{ url_for('guest.list_guests') }}" class="btn btn-primary">
-                            <i class="fas fa-users me-2"></i>View Guest List
-                        </a>
-                        {% if current_user.registry %}
-                            <a href="{{ url_for('registry.edit', registry_id=current_user.registry.id) }}" 
-                               class="btn btn-outline-primary ms-2">
-                                <i class="fas fa-gift me-2"></i>Our Registry
+                        <div class="btn-group">
+                            <a href="{{ url_for('guest.list_guests') }}" class="btn btn-primary">
+                                <i class="fas fa-users me-2"></i>Guest List
                             </a>
-                        {% else %}
-                            <a href="{{ url_for('registry.create') }}" 
-                               class="btn btn-outline-primary ms-2">
-                                <i class="fas fa-gift me-2"></i>Create Registry
+                            <a href="{{ url_for('guest.wedding_party') }}" class="btn btn-primary">
+                                <i class="fas fa-glass-cheers me-2"></i>Wedding Party
                             </a>
-                        {% endif %}
+                            {% if current_user.registry %}
+                                <a href="{{ url_for('registry.edit', registry_id=current_user.registry.id) }}" 
+                                   class="btn btn-outline-primary">
+                                    <i class="fas fa-gift me-2"></i>Our Registry
+                                </a>
+                            {% else %}
+                                <a href="{{ url_for('registry.create') }}" 
+                                   class="btn btn-outline-primary">
+                                    <i class="fas fa-gift me-2"></i>Create Registry
+                                </a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
