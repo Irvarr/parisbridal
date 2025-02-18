@@ -3,11 +3,12 @@ from flask_login import login_user, logout_user, login_required, current_user
 from datetime import datetime
 from app import db
 from models import User, Registry, RegistryItem, Guest #Added Guest import
-from forms import RegisterForm, LoginForm, RegistryForm, RegistryItemForm, RegistrySearchForm, PurchaseForm
+from forms import RegisterForm, LoginForm, RegistryForm, RegistryItemForm, RegistrySearchForm, PurchaseForm, GuestForm # Added GuestForm import
 
 main = Blueprint('main', __name__)
 auth = Blueprint('auth', __name__, url_prefix='/auth')
 registry = Blueprint('registry', __name__, url_prefix='/registry')
+guest = Blueprint('guest', __name__, url_prefix='/guest')
 
 @main.route('/')
 def index():
@@ -199,3 +200,45 @@ def delete_item(item_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
+
+
+# Guest routes
+@guest.route('/list')
+@login_required
+def list_guests():
+    guests = Guest.query.filter_by(user_id=current_user.id).order_by(Guest.name).all()
+    return render_template('guest/list.html', guests=guests)
+
+@guest.route('/add', methods=['GET', 'POST'])
+@login_required
+def add_guest():
+    form = GuestForm()
+    if form.validate_on_submit():
+        guest = Guest(
+            user_id=current_user.id,
+            name=form.name.data,
+            email=form.email.data,
+            phone=form.phone.data,
+            number_of_guests=form.number_of_guests.data,
+            dietary_restrictions=form.dietary_restrictions.data,
+            notes=form.notes.data
+        )
+        db.session.add(guest)
+        db.session.commit()
+        flash('Guest added successfully!', 'success')
+        return redirect(url_for('guest.list_guests'))
+    return render_template('guest/add.html', form=form)
+
+@guest.route('/wedding-details')
+@login_required
+def wedding_details():
+    return render_template('guest/wedding_details.html')
+
+@guest.route('/<int:guest_id>/rsvp/<status>')
+def update_rsvp(guest_id, status):
+    guest = Guest.query.get_or_404(guest_id)
+    if status in ['attending', 'not_attending']:
+        guest.rsvp_status = status
+        db.session.commit()
+        flash('RSVP status updated!', 'success')
+    return redirect(url_for('guest.list_guests'))

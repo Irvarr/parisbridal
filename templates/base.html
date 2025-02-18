@@ -30,6 +30,12 @@
                             </li>
                         {% endif %}
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('guest.wedding_details') }}">Wedding Details</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('guest.list_guests') }}">Guest List</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
                         </li>
                     {% else %}

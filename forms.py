@@ -46,3 +46,11 @@ class PurchaseForm(FlaskForm):
     ship_to_couple = BooleanField('Ship to Couple', default=True)
     bring_to_wedding = BooleanField('I will bring this gift to the wedding', default=False)
     shipping_address = TextAreaField('Shipping Address', validators=[Optional()])
+
+class GuestForm(FlaskForm):
+    name = StringField('Guest Name', validators=[DataRequired(), Length(max=100)])
+    email = StringField('Email', validators=[Optional(), Email()])
+    phone = StringField('Phone', validators=[Optional(), Length(max=20)])
+    number_of_guests = StringField('Number of Guests', validators=[DataRequired()], default=1)
+    dietary_restrictions = TextAreaField('Dietary Restrictions')
+    notes = TextAreaField('Additional Notes')
