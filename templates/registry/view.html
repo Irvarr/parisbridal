@@ -35,16 +35,37 @@
                             {% if item.price %}
                                 <p class="card-text"><strong>Price:</strong> ${{ "%.2f"|format(item.price) }}</p>
                             {% endif %}
-                            {% if item.amazon_url %}
-                                <a href="{{ item.amazon_url }}" class="btn btn-primary" target="_blank">
-                                    <i class="fab fa-amazon"></i> View on Amazon
-                                </a>
-                            {% endif %}
+                            <div class="d-grid gap-2">
+                                {% if not item.is_purchased %}
+                                    {% if item.amazon_url %}
+                                        <a href="{{ item.amazon_url }}" class="btn btn-primary" target="_blank">
+                                            <i class="fab fa-amazon"></i> View on Amazon
+                                        </a>
+                                    {% endif %}
+                                    <a href="{{ url_for('registry.purchase', item_id=item.id) }}" class="btn btn-success">
+                                        <i class="fas fa-gift"></i> Mark as Purchased
+                                    </a>
+                                {% else %}
+                                    <div class="alert alert-success mb-0">
+                                        <i class="fas fa-check-circle"></i> Purchased by {{ item.purchased_by }}
+                                        <br>
+                                        <small>{{ item.purchase_date.strftime('%B %d, %Y') }}</small>
+                                    </div>
+                                {% endif %}
+                            </div>
                         </div>
                         <div class="card-footer">
-                            <small class="text-muted">Status: 
+                            <small class="text-muted">
+                                Status: 
                                 {% if item.is_purchased %}
-                                    <span class="text-success">Purchased</span>
+                                    <span class="text-success">
+                                        Purchased
+                                        {% if item.ship_to_couple %}
+                                            (Shipping to Couple)
+                                        {% else %}
+                                            (Shipping to Purchaser)
+                                        {% endif %}
+                                    </span>
                                 {% else %}
                                     <span class="text-warning">Available</span>
                                 {% endif %}
