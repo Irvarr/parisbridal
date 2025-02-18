@@ -122,21 +122,25 @@ def edit(registry_id):
     if current_user.id != registry.user_id:
         flash('You cannot edit this registry', 'error')
         return redirect(url_for('main.index'))
-    
+
     form = RegistryItemForm()
     if form.validate_on_submit():
         item = RegistryItem(
             registry=registry,
             name=form.name.data,
             description=form.description.data,
-            price=form.price.data,
-            amazon_url=form.amazon_url.data
+            item_type=form.item_type.data,
+            price=form.price.data if form.item_type.data in ['physical', 'experience'] else None,
+            target_amount=form.target_amount.data if form.item_type.data == 'cash' else None,
+            amazon_url=form.amazon_url.data if form.item_type.data == 'physical' else None,
+            experience_date=form.experience_date.data if form.item_type.data == 'experience' else None,
+            experience_location=form.experience_location.data if form.item_type.data == 'experience' else None
         )
         db.session.add(item)
         db.session.commit()
         flash('Item added successfully!', 'success')
         return redirect(url_for('registry.edit', registry_id=registry_id))
-    
+
     return render_template('registry/edit.html', registry=registry, form=form)
 
 @registry.route('/item/<int:item_id>/purchase', methods=['GET', 'POST'])

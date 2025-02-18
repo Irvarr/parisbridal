@@ -9,6 +9,10 @@
                 <form method="POST">
                     {{ form.hidden_tag() }}
                     <div class="mb-3">
+                        {{ form.item_type.label(class="form-label") }}
+                        {{ form.item_type(class="form-control", onchange="updateFormFields()") }}
+                    </div>
+                    <div class="mb-3">
                         {{ form.name.label(class="form-label") }}
                         {{ form.name(class="form-control") }}
                     </div>
@@ -16,14 +20,40 @@
                         {{ form.description.label(class="form-label") }}
                         {{ form.description(class="form-control", rows=3) }}
                     </div>
-                    <div class="mb-3">
-                        {{ form.price.label(class="form-label") }}
-                        {{ form.price(class="form-control", type="number", step="0.01") }}
+
+                    <div id="physical-fields">
+                        <div class="mb-3">
+                            {{ form.price.label(class="form-label") }}
+                            {{ form.price(class="form-control", type="number", step="0.01") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.amazon_url.label(class="form-label") }}
+                            {{ form.amazon_url(class="form-control") }}
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        {{ form.amazon_url.label(class="form-label") }}
-                        {{ form.amazon_url(class="form-control") }}
+
+                    <div id="cash-fields" style="display: none;">
+                        <div class="mb-3">
+                            {{ form.target_amount.label(class="form-label") }}
+                            {{ form.target_amount(class="form-control", type="number", step="0.01") }}
+                        </div>
                     </div>
+
+                    <div id="experience-fields" style="display: none;">
+                        <div class="mb-3">
+                            {{ form.price.label(class="form-label") }}
+                            {{ form.price(class="form-control", type="number", step="0.01") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.experience_date.label(class="form-label") }}
+                            {{ form.experience_date(class="form-control", type="date") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.experience_location.label(class="form-label") }}
+                            {{ form.experience_location(class="form-control") }}
+                        </div>
+                    </div>
+
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary">Add Item</button>
                     </div>
@@ -41,7 +71,8 @@
                         <thead>
                             <tr>
                                 <th>Item</th>
-                                <th>Price</th>
+                                <th>Type</th>
+                                <th>Price/Amount</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -55,8 +86,25 @@
                                             <br>
                                             <small class="text-muted">{{ item.description }}</small>
                                         {% endif %}
+                                        {% if item.experience_date %}
+                                            <br>
+                                            <small class="text-muted">Date: {{ item.experience_date.strftime('%B %d, %Y') }}</small>
+                                        {% endif %}
+                                        {% if item.experience_location %}
+                                            <br>
+                                            <small class="text-muted">Location: {{ item.experience_location }}</small>
+                                        {% endif %}
                                     </td>
-                                    <td>${{ "%.2f"|format(item.price) if item.price else "N/A" }}</td>
+                                    <td>
+                                        <span class="badge bg-info">{{ item.item_type.title() }}</span>
+                                    </td>
+                                    <td>
+                                        {% if item.item_type == 'cash' %}
+                                            Target: ${{ "%.2f"|format(item.target_amount) }}
+                                        {% else %}
+                                            ${{ "%.2f"|format(item.price) if item.price else "N/A" }}
+                                        {% endif %}
+                                    </td>
                                     <td>
                                         {% if item.is_purchased %}
                                             <span class="badge bg-success">Purchased</span>
@@ -96,4 +144,20 @@
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/registry.js') }}"></script>
+<script>
+function updateFormFields() {
+    const giftType = document.getElementById('item_type').value;
+    const physicalFields = document.getElementById('physical-fields');
+    const cashFields = document.getElementById('cash-fields');
+    const experienceFields = document.getElementById('experience-fields');
+
+    physicalFields.style.display = giftType === 'physical' ? 'block' : 'none';
+    cashFields.style.display = giftType === 'cash' ? 'block' : 'none';
+    experienceFields.style.display = giftType === 'experience' ? 'block' : 'none';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    updateFormFields();
+});
+</script>
 {% endblock %}
