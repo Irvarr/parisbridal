@@ -6,6 +6,7 @@
         <div class="card">
             <div class="card-body">
                 <h2 class="card-title text-center mb-4">Create Your Wedding</h2>
+                <p class="lead text-center mb-4">Let's start planning your special day!</p>
                 <form method="POST">
                     {{ form.hidden_tag() }}
                     <div class="mb-3">
@@ -36,8 +37,9 @@
                             <span class="text-danger">{{ error }}</span>
                         {% endfor %}
                     </div>
-                    <div class="d-grid">
+                    <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary">Create Wedding</button>
+                        <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">Cancel</a>
                     </div>
                 </form>
             </div>

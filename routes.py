@@ -88,17 +88,17 @@ def logout():
 @login_required
 def wedding_details():
     if not current_user.wedding:
-        flash('No wedding details found.', 'error')
-        return redirect(url_for('main.index'))
-    return render_template('guest/wedding_details.html', wedding=current_user.wedding)
+        flash('No wedding details found. Would you like to create one?', 'info')
+        return redirect(url_for('guest.create_wedding'))
+    return render_template('guest/wedding_details.html')
 
 @guest.route('/quinceanera-details')
 @login_required
 def quinceanera_details():
     if not current_user.quinceanera:
-        flash('No quinceañera details found.', 'error')
-        return redirect(url_for('main.index'))
-    return render_template('guest/quinceanera_details.html', quinceanera=current_user.quinceanera)
+        flash('No quinceañera details found. Would you like to create one?', 'info')
+        return redirect(url_for('guest.create_quinceanera'))
+    return render_template('guest/quinceanera_details.html')
 
 
 @guest.route('/list')
