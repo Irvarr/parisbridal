@@ -143,14 +143,8 @@
                             </li>
                             {% if current_user.registry %}
                                 <li>
-                                    <a class="dropdown-item" href="{{ url_for('registry.edit', registry_id=current_user.registry.id) }}">
-                                        <i class="fas fa-gift me-2"></i>My Registry
-                                    </a>
-                                </li>
-                            {% else %}
-                                <li>
-                                    <a class="dropdown-item" href="{{ url_for('registry.create') }}">
-                                        <i class="fas fa-gift me-2"></i>My Registry
+                                    <a class="dropdown-item" href="{{ url_for('registry.view', registry_id=current_user.registry.id) }}">
+                                        <i class="fas fa-gift me-2"></i>View My Registry
                                     </a>
                                 </li>
                             {% endif %}
