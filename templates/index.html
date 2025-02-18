@@ -11,14 +11,14 @@
     <div class="row justify-content-center mb-5">
         <div class="col-md-6">
             <div class="d-grid gap-3">
-                <button onclick="selectCelebrationType('quinceanera')" id="quinceanera-btn" class="btn btn-primary btn-lg celebration-btn">
-                    <i class="fas fa-crown me-2"></i>Quinceañera
+                <button onclick="handleCelebrationClick('quinceanera')" id="quinceanera-btn" class="btn btn-primary btn-lg celebration-btn">
+                    <i class="fas fa-crown me-2"></i>My Quinceañera
                 </button>
-                <button onclick="selectCelebrationType('wedding')" id="wedding-btn" class="btn btn-primary btn-lg celebration-btn">
-                    <i class="fas fa-ring me-2"></i>Wedding
+                <button onclick="handleCelebrationClick('wedding')" id="wedding-btn" class="btn btn-primary btn-lg celebration-btn">
+                    <i class="fas fa-ring me-2"></i>My Wedding
                 </button>
             </div>
-            <!-- Search Section - Aligned with buttons -->
+            <!-- Search Section -->
             <form action="{{ url_for('main.search') }}" method="GET" class="search-form mt-3">
                 <div class="input-group">
                     <input type="text" name="search" class="form-control" 
@@ -139,18 +139,26 @@
 </div>
 
 <script>
-    function selectCelebrationType(type) {
-        // Remove active class from all buttons
+    function handleCelebrationClick(type) {
+        {% if current_user.is_authenticated %}
+            window.location.href = type === 'wedding' 
+                ? "{{ url_for('guest.wedding_details') }}"
+                : "{{ url_for('guest.quinceanera_details') }}";
+        {% else %}
+            window.location.href = type === 'wedding'
+                ? "{{ url_for('auth.login', next=url_for('guest.wedding_details')) }}"
+                : "{{ url_for('auth.login', next=url_for('guest.quinceanera_details')) }}";
+        {% endif %}
+
+        // Store the selection for the search form
+        localStorage.setItem('celebrationType', type);
+        document.getElementById('celebration_type_input').value = type;
+
+        // Update button styles
         document.querySelectorAll('.celebration-btn').forEach(btn => {
             btn.classList.remove('active');
         });
-
-        // Add active class to selected button
         document.getElementById(`${type}-btn`).classList.add('active');
-
-        // Store the selection and update search form
-        localStorage.setItem('celebrationType', type);
-        document.getElementById('celebration_type_input').value = type;
     }
 
     // Restore previous selection on page load
