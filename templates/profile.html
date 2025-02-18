@@ -3,47 +3,51 @@
 {% block content %}
 <div class="container">
     <h1 class="text-center mb-5">My Events</h1>
-    
+
     <div class="row">
-        {% if current_user.wedding %}
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h2 class="card-title">Wedding</h2>
-                    <p class="lead">{{ current_user.wedding.partner1_name }} & {{ current_user.wedding.partner2_name }}</p>
-                    <p><i class="fas fa-calendar-alt me-2"></i>{{ current_user.wedding.celebration_date.strftime('%B %d, %Y') }}</p>
-                    {% if current_user.wedding.celebration_location %}
-                    <p><i class="fas fa-map-marker-alt me-2"></i>{{ current_user.wedding.celebration_location }}</p>
-                    {% endif %}
-                    <div class="mt-3">
-                        <a href="{{ url_for('guest.wedding_details') }}" class="btn btn-primary">View Details</a>
-                        <a href="{{ url_for('guest.wedding_party', event_id=current_user.wedding.id) }}" class="btn btn-outline-primary">Wedding Party</a>
+        {% if current_user.weddings %}
+            {% for wedding in current_user.weddings %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h2 class="card-title">Wedding</h2>
+                        <p class="lead">{{ wedding.partner1_name }} & {{ wedding.partner2_name }}</p>
+                        <p><i class="fas fa-calendar-alt me-2"></i>{{ wedding.celebration_date.strftime('%B %d, %Y') }}</p>
+                        {% if wedding.celebration_location %}
+                        <p><i class="fas fa-map-marker-alt me-2"></i>{{ wedding.celebration_location }}</p>
+                        {% endif %}
+                        <div class="mt-3">
+                            <a href="{{ url_for('guest.wedding_details', event_id=wedding.id) }}" class="btn btn-primary">View Details</a>
+                            <a href="{{ url_for('guest.wedding_party', event_id=wedding.id) }}" class="btn btn-outline-primary">Wedding Party</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+            {% endfor %}
         {% endif %}
-        
-        {% if current_user.quinceanera %}
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h2 class="card-title">Quinceañera</h2>
-                    <p class="lead">{{ current_user.quinceanera.celebrant_name }}</p>
-                    <p><i class="fas fa-calendar-alt me-2"></i>{{ current_user.quinceanera.celebration_date.strftime('%B %d, %Y') }}</p>
-                    {% if current_user.quinceanera.celebration_location %}
-                    <p><i class="fas fa-map-marker-alt me-2"></i>{{ current_user.quinceanera.celebration_location }}</p>
-                    {% endif %}
-                    <div class="mt-3">
-                        <a href="{{ url_for('guest.quinceanera_details') }}" class="btn btn-primary">View Details</a>
-                        <a href="{{ url_for('guest.wedding_party', event_id=current_user.quinceanera.id) }}" class="btn btn-outline-primary">Court</a>
+
+        {% if current_user.quinceaneras %}
+            {% for quinceanera in current_user.quinceaneras %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h2 class="card-title">Quinceañera</h2>
+                        <p class="lead">{{ quinceanera.celebrant_name }}</p>
+                        <p><i class="fas fa-calendar-alt me-2"></i>{{ quinceanera.celebration_date.strftime('%B %d, %Y') }}</p>
+                        {% if quinceanera.celebration_location %}
+                        <p><i class="fas fa-map-marker-alt me-2"></i>{{ quinceanera.celebration_location }}</p>
+                        {% endif %}
+                        <div class="mt-3">
+                            <a href="{{ url_for('guest.quinceanera_details', event_id=quinceanera.id) }}" class="btn btn-primary">View Details</a>
+                            <a href="{{ url_for('guest.wedding_party', event_id=quinceanera.id) }}" class="btn btn-outline-primary">Court</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+            {% endfor %}
         {% endif %}
-        
-        {% if not current_user.wedding and not current_user.quinceanera %}
+
+        {% if not current_user.weddings and not current_user.quinceaneras %}
         <div class="col-12 text-center">
             <p class="lead mb-4">You haven't created any events yet.</p>
             <div class="d-grid gap-3 col-md-6 mx-auto">

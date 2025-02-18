@@ -93,22 +93,23 @@ def logout():
     logout_user()
     return redirect(url_for('main.index'))
 
-@guest.route('/wedding-details')
+@guest.route('/wedding-details/<int:event_id>')
 @login_required
-def wedding_details():
-    if not current_user.wedding:
-        flash('No wedding details found. Would you like to create one?', 'info')
-        return redirect(url_for('guest.create_wedding'))
-    return render_template('guest/wedding_details.html')
+def wedding_details(event_id=None):
+    wedding = Wedding.query.filter_by(id=event_id, user_id=current_user.id).first()
+    if not wedding:
+        flash('Wedding not found.', 'error')
+        return redirect(url_for('main.profile'))
+    return render_template('guest/wedding_details.html', wedding=wedding)
 
-@guest.route('/quinceanera-details')
+@guest.route('/quinceanera-details/<int:event_id>')
 @login_required
-def quinceanera_details():
-    if not current_user.quinceanera:
-        flash('No quinceañera details found. Would you like to create one?', 'info')
-        return redirect(url_for('guest.create_quinceanera'))
-    return render_template('guest/quinceanera_details.html')
-
+def quinceanera_details(event_id=None):
+    quinceanera = Quinceanera.query.filter_by(id=event_id, user_id=current_user.id).first()
+    if not quinceanera:
+        flash('Quinceañera not found.', 'error')
+        return redirect(url_for('main.profile'))
+    return render_template('guest/quinceanera_details.html', quinceanera=quinceanera)
 
 @guest.route('/list')
 @login_required
@@ -306,7 +307,7 @@ def update_meal_choice(guest_id):
 def create_wedding():
     if current_user.wedding:
         flash('You already have a wedding created.', 'warning')
-        return redirect(url_for('guest.wedding_details'))
+        return redirect(url_for('guest.wedding_details', event_id=current_user.wedding.id))
 
     form = CreateWeddingForm()
     if request.method == 'POST':
@@ -324,7 +325,7 @@ def create_wedding():
                 db.session.add(wedding)
                 db.session.commit()
                 flash('Wedding details created successfully!', 'success')
-                return redirect(url_for('guest.wedding_details'))
+                return redirect(url_for('guest.wedding_details', event_id=wedding.id))
             except Exception as e:
                 logger.error(f"Error creating wedding: {str(e)}")
                 db.session.rollback()
@@ -342,7 +343,7 @@ def create_wedding():
 def create_quinceanera():
     if current_user.quinceanera:
         flash('You already have a quinceañera created.', 'warning')
-        return redirect(url_for('guest.quinceanera_details'))
+        return redirect(url_for('guest.quinceanera_details', event_id=current_user.quinceanera.id))
 
     form = CreateQuinceaneraForm()
     if request.method == 'POST':
@@ -359,7 +360,7 @@ def create_quinceanera():
                 db.session.add(quinceanera)
                 db.session.commit()
                 flash('Quinceañera details created successfully!', 'success')
-                return redirect(url_for('guest.quinceanera_details'))
+                return redirect(url_for('guest.quinceanera_details', event_id=quinceanera.id))
             except Exception as e:
                 logger.error(f"Error creating quinceañera: {str(e)}")
                 db.session.rollback()

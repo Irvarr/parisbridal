@@ -12,9 +12,9 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    # Relationships
-    wedding = db.relationship('Wedding', backref='user', uselist=False)
-    quinceanera = db.relationship('Quinceanera', backref='user', uselist=False)
+    # Updated to allow multiple events
+    weddings = db.relationship('Wedding', backref='user', lazy=True)
+    quinceaneras = db.relationship('Quinceanera', backref='user', lazy=True)
     registry = db.relationship('Registry', backref='user', uselist=False)
     guests = db.relationship('Guest', backref='user', lazy=True)
     wedding_party = db.relationship('WeddingPartyMember', backref='user', lazy=True)

@@ -143,13 +143,28 @@
 <script>
     function handleCelebrationClick(type) {
         {% if current_user.is_authenticated %}
-            window.location.href = type === 'wedding' 
-                ? "{{ url_for('guest.wedding_details') }}"
-                : "{{ url_for('guest.quinceanera_details') }}";
+            {% if current_user.weddings or current_user.quinceaneras %}
+                if (type === 'wedding' && {{ current_user.weddings|length > 0 }}) {
+                    window.location.href = "{{ url_for('guest.wedding_details', event_id=current_user.weddings[0].id) }}";
+                } else if (type === 'quinceanera' && {{ current_user.quinceaneras|length > 0 }}) {
+                    window.location.href = "{{ url_for('guest.quinceanera_details', event_id=current_user.quinceaneras[0].id) }}";
+                } else {
+                    // Redirect to create page if no event of selected type exists
+                    window.location.href = type === 'wedding' 
+                        ? "{{ url_for('guest.create_wedding') }}"
+                        : "{{ url_for('guest.create_quinceanera') }}";
+                }
+            {% else %}
+                // No events exist, redirect to create page
+                window.location.href = type === 'wedding' 
+                    ? "{{ url_for('guest.create_wedding') }}"
+                    : "{{ url_for('guest.create_quinceanera') }}";
+            {% endif %}
         {% else %}
+            // Not authenticated, redirect to login with next parameter
             window.location.href = type === 'wedding'
-                ? "{{ url_for('auth.login', next=url_for('guest.wedding_details')) }}"
-                : "{{ url_for('auth.login', next=url_for('guest.quinceanera_details')) }}";
+                ? "{{ url_for('auth.login', next=url_for('guest.create_wedding')) }}"
+                : "{{ url_for('auth.login', next=url_for('guest.create_quinceanera')) }}";
         {% endif %}
 
         // Update button styles
