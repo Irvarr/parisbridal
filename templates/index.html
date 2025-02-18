@@ -8,83 +8,87 @@
     <div class="row justify-content-center mb-5">
         <div class="col-md-6">
             <div class="d-grid gap-3">
-                <a href="{{ url_for('main.index') }}" class="btn btn-primary btn-lg">
+                <button onclick="selectCelebrationType('quinceanera')" id="quinceanera-btn" class="btn btn-primary btn-lg celebration-btn">
                     <i class="fas fa-crown me-2"></i>Quinceañera
-                </a>
-                <a href="{{ url_for('main.index') }}" class="btn btn-primary btn-lg">
+                </button>
+                <button onclick="selectCelebrationType('wedding')" id="wedding-btn" class="btn btn-primary btn-lg celebration-btn">
                     <i class="fas fa-ring me-2"></i>Wedding
-                </a>
+                </button>
             </div>
         </div>
     </div>
 
+    <!-- Image Gallery Section - Responsive Grid -->
     <div class="row g-4 mb-5">
-        <div class="col-md-6">
+        <div class="col-12 col-md-4">
             <img src="https://images.unsplash.com/photo-1521478706270-f2e33c203d95" 
                  alt="Wedding Celebration" 
                  class="img-fluid rounded shadow">
         </div>
-        <div class="col-md-6">
+        <div class="col-12 col-md-4">
             <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce" 
                  alt="Quinceañera Celebration" 
                  class="img-fluid rounded shadow">
         </div>
+        <div class="col-12 col-md-4">
+            <img src="https://images.unsplash.com/photo-1519741497674-611481863552" 
+                 alt="Special Moments" 
+                 class="img-fluid rounded shadow">
+        </div>
     </div>
 
-    <!-- About Us Section -->
-    <section class="py-5 text-start">
+    <!-- About Us Section - Mobile Optimized -->
+    <section class="py-5">
         <div class="container">
-            <h2 class="text-center mb-4">About Us</h2>
+            <h2 class="text-center mb-4">About Paris Bridal</h2>
             <p class="lead text-center mb-5">
-                Your One-Stop Destination for Weddings & Quinceañeras in Roswell, NM
+                Your Premier Destination for Weddings & Quinceañeras in Roswell, NM
             </p>
 
-            <p class="mb-4">
-                Welcome to Paris Bridal, a family-owned bridal boutique located in the heart of Roswell, NM. 
-                For years, we have proudly served brides, quinceañeras, and families across Roswell and 
-                surrounding areas, helping them celebrate their most special moments with elegance and style.
-            </p>
-
-            <h3 class="h4 mb-4">Our Services</h3>
-            <div class="row g-4 mb-5">
-                <div class="col-md-6">
-                    <ul class="list-unstyled">
-                        <li class="mb-3"><i class="fas fa-sparkles me-2"></i>Bridal Gowns – Timeless, elegant, and modern designs for every bride.</li>
-                        <li class="mb-3"><i class="fas fa-sparkles me-2"></i>Quinceañera Dresses – Stunning gowns in a variety of colors and styles.</li>
-                        <li class="mb-3"><i class="fas fa-sparkles me-2"></i>Tuxedo Rentals – Stylish and affordable options for grooms, chambelanes, and formal events.</li>
-                        <li class="mb-3"><i class="fas fa-sparkles me-2"></i>Evening Wear & Shoes – Perfect for weddings, parties, and galas.</li>
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <ul class="list-unstyled">
-                        <li class="mb-3"><i class="fas fa-sparkles me-2"></i>Accessories – Veils, tiaras, jewelry, and more to complete your look.</li>
-                        <li class="mb-3"><i class="fas fa-sparkles me-2"></i>Venue Decorations – Custom packages for weddings, quinceañeras, and special events.</li>
-                        <li class="mb-3"><i class="fas fa-sparkles me-2"></i>Wedding Planning Services – Helping you create the perfect event, stress-free.</li>
-                        <li class="mb-3"><i class="fas fa-sparkles me-2"></i>Gift Registry – Now offering a wedding registry to make gift-giving easier.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <h3 class="h4 mb-4">Why Choose Paris Bridal?</h3>
+            <!-- Mobile-optimized content with cards -->
             <div class="row g-4">
-                <div class="col-md-6">
-                    <ul class="list-unstyled">
-                        <li class="mb-3"><i class="fas fa-ring me-2"></i>Locally Owned & Family-Operated – We bring a personal touch to every celebration.</li>
-                        <li class="mb-3"><i class="fas fa-ring me-2"></i>Exclusive Selection – Handpicked high-quality dresses, accessories, and décor.</li>
-                    </ul>
+                <div class="col-12 col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h3 class="h4 mb-3">Our Story</h3>
+                            <p>
+                                As a family-owned bridal boutique in the heart of Roswell, we've been making dreams 
+                                come true for generations. Our passion lies in creating unforgettable celebrations 
+                                that reflect your unique style and traditions.
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <ul class="list-unstyled">
-                        <li class="mb-3"><i class="fas fa-ring me-2"></i>Affordable & Customizable – We work within your budget to bring your vision to life.</li>
-                        <li class="mb-3"><i class="fas fa-ring me-2"></i>Personalized Service – Our experienced team offers one-on-one consultations.</li>
-                    </ul>
+
+                <div class="col-12 col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h3 class="h4 mb-3">What We Offer</h3>
+                            <div class="row">
+                                <div class="col-6">
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2"><i class="fas fa-sparkles me-2"></i>Bridal Gowns</li>
+                                        <li class="mb-2"><i class="fas fa-sparkles me-2"></i>Quinceañera Dresses</li>
+                                        <li class="mb-2"><i class="fas fa-sparkles me-2"></i>Tuxedo Rentals</li>
+                                    </ul>
+                                </div>
+                                <div class="col-6">
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2"><i class="fas fa-sparkles me-2"></i>Accessories</li>
+                                        <li class="mb-2"><i class="fas fa-sparkles me-2"></i>Decorations</li>
+                                        <li class="mb-2"><i class="fas fa-sparkles me-2"></i>Planning Services</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="text-center mt-4">
-                <p class="lead">
+                <p class="location-badge">
                     <i class="fas fa-map-marker-alt me-2"></i>
-                    Visit us at 106 South Main St, Roswell, NM—just across from the UFO Museum.
+                    Find us at 106 South Main St, Roswell, NM
                 </p>
             </div>
         </div>
@@ -97,4 +101,28 @@
     </div>
     {% endif %}
 </div>
+
+<!-- Add this to your template for celebration type selection -->
+<script>
+    function selectCelebrationType(type) {
+        // Remove active class from all buttons
+        document.querySelectorAll('.celebration-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // Add active class to selected button
+        document.getElementById(`${type}-btn`).classList.add('active');
+
+        // Store the selection
+        localStorage.setItem('celebrationType', type);
+    }
+
+    // Restore previous selection on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedType = localStorage.getItem('celebrationType');
+        if (savedType) {
+            document.getElementById(`${savedType}-btn`).classList.add('active');
+        }
+    });
+</script>
 {% endblock %}

@@ -102,11 +102,11 @@ h1, h2, h3, .display-4 {
         padding-left: 20px;
         padding-right: 20px;
     }
-    
+
     .display-4 {
         font-size: 2rem;
     }
-    
+
     .share-buttons .btn {
         width: 100%;
         margin-bottom: 0.5rem;
@@ -188,4 +188,92 @@ footer {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* New styles for celebration type buttons */
+.celebration-btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.celebration-btn.active {
+    background: linear-gradient(45deg, var(--bs-primary), #ff69b4);
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(var(--bs-primary-rgb), 0.4);
+}
+
+/* Enhanced mobile responsiveness */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .display-4 {
+        font-size: 2rem;
+    }
+
+    .celebration-btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Optimize card layout for mobile */
+    .card {
+        margin-bottom: 1rem;
+    }
+
+    /* Adjust spacing for mobile */
+    .py-5 {
+        padding-top: 3rem !important;
+        padding-bottom: 3rem !important;
+    }
+
+    /* Make images more prominent on mobile */
+    .img-fluid {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Location badge styling */
+.location-badge {
+    display: inline-block;
+    background: rgba(var(--bs-primary-rgb), 0.1);
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    margin-top: 2rem;
+}
+
+/* Enhanced card interactions */
+.card {
+    border: 1px solid rgba(var(--bs-primary-rgb), 0.1);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Service list items enhancement */
+.list-unstyled li {
+    transition: all 0.3s ease;
+    padding: 0.5rem 0;
+}
+
+.list-unstyled li:hover {
+    transform: translateX(5px);
+    color: var(--bs-primary);
+}
+
+/* Image gallery enhancements */
+.img-fluid {
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.img-fluid:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }

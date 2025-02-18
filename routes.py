@@ -236,6 +236,11 @@ def add_guest():
 def wedding_details():
     return render_template('guest/wedding_details.html')
 
+@guest.route('/quinceanera-details')
+@login_required
+def quinceanera_details():
+    return render_template('guest/quinceanera_details.html')
+
 @guest.route('/<int:guest_id>/rsvp/<status>')
 def update_rsvp(guest_id, status):
     guest = Guest.query.get_or_404(guest_id)
