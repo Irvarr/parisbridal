@@ -150,10 +150,6 @@
                 : "{{ url_for('auth.login', next=url_for('guest.quinceanera_details')) }}";
         {% endif %}
 
-        // Store the selection for the search form
-        localStorage.setItem('celebrationType', type);
-        document.getElementById('celebration_type_input').value = type;
-
         // Update button styles
         document.querySelectorAll('.celebration-btn').forEach(btn => {
             btn.classList.remove('active');
@@ -161,13 +157,11 @@
         document.getElementById(`${type}-btn`).classList.add('active');
     }
 
-    // Restore previous selection on page load
+    // Remove stored selection on page load
     document.addEventListener('DOMContentLoaded', () => {
-        const savedType = localStorage.getItem('celebrationType');
-        if (savedType) {
-            document.getElementById(`${savedType}-btn`).classList.add('active');
-            document.getElementById('celebration_type_input').value = savedType;
-        }
+        document.querySelectorAll('.celebration-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
     });
 </script>
 {% endblock %}
