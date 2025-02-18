@@ -37,6 +37,20 @@
                         {% endfor %}
                     </div>
                     <div class="mb-3">
+                        {{ form.table_assignment.label(class="form-label") }}
+                        {{ form.table_assignment(class="form-control") }}
+                        {% for error in form.table_assignment.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.meal_choice.label(class="form-label") }}
+                        {{ form.meal_choice(class="form-select") }}
+                        {% for error in form.meal_choice.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
                         {{ form.dietary_restrictions.label(class="form-label") }}
                         {{ form.dietary_restrictions(class="form-control", rows=3) }}
                         {% for error in form.dietary_restrictions.errors %}

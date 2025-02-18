@@ -301,7 +301,9 @@ def add_party_member():
                 rsvp_status='attending',  # Wedding party members are automatically attending
                 number_of_guests=1,
                 notes=f"Wedding Party Member - {form.role_type.data.title()}"
-                + (f" ({form.role_title.data})" if form.role_title.data else "")
+                + (f" ({form.role_title.data})" if form.role_title.data else ""),
+                table_assignment=form.table_assignment.data if hasattr(form, 'table_assignment') else None,
+                meal_choice=form.meal_choice.data if hasattr(form, 'meal_choice') else 'no_preference'
             )
             db.session.add(guest)
 

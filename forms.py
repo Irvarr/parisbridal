@@ -80,4 +80,16 @@ class WeddingPartyMemberForm(FlaskForm):
     role_title = StringField('Special Title (e.g., Maid of Honor, Best Man)', validators=[Optional(), Length(max=50)])
     email = StringField('Email', validators=[Optional(), Email()])
     phone = StringField('Phone', validators=[Optional(), Length(max=20)])
+    table_assignment = StringField('Table Assignment', validators=[Optional(), Length(max=50)])
+    meal_choice = SelectField('Meal Preference',
+        choices=[
+            ('no_preference', 'No Preference'),
+            ('chicken', 'Chicken'),
+            ('salmon', 'Salmon'),
+            ('steak', 'Steak'),
+            ('vegan', 'Vegan')
+        ],
+        default='no_preference',
+        validators=[Optional()]
+    )
     notes = TextAreaField('Notes')
