@@ -98,6 +98,8 @@ def logout():
 @guest.route('/wedding-details/<int:event_id>')
 @login_required
 def wedding_details(event_id):
+    logger.debug(f"Accessing wedding details for event_id: {event_id}")
+    logger.debug(f"Current user weddings: {[w.id for w in current_user.weddings]}")
     wedding = Wedding.query.filter_by(id=event_id, user_id=current_user.id).first()
     if not wedding:
         flash('Wedding not found.', 'error')
@@ -107,6 +109,8 @@ def wedding_details(event_id):
 @guest.route('/quinceanera-details/<int:event_id>')
 @login_required
 def quinceanera_details(event_id):
+    logger.debug(f"Accessing quinceanera details for event_id: {event_id}")
+    logger.debug(f"Current user quinceaneras: {[q.id for q in current_user.quinceaneras]}")
     quinceanera = Quinceanera.query.filter_by(id=event_id, user_id=current_user.id).first()
     if not quinceanera:
         flash('Quinceañera not found.', 'error')
