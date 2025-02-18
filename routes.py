@@ -3,10 +3,12 @@ from flask_login import login_user, logout_user, login_required, current_user
 from datetime import datetime
 import logging
 from app import db
-from models import User, Registry, RegistryItem, Guest, WeddingPartyMember, Wedding, Quinceanera
+from models import User, Registry, RegistryItem, Guest, WeddingPartyMember, Wedding, Quinceanera, GiftSuggestion # Added GiftSuggestion
 from forms import (RegisterForm, LoginForm, RegistryForm, RegistryItemForm, 
                   RegistrySearchForm, PurchaseForm, GuestForm, WeddingPartyMemberForm,
                   CreateWeddingForm, CreateQuinceaneraForm)
+from sqlalchemy import desc
+import random
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -373,13 +375,26 @@ def create_quinceanera():
 
     return render_template('guest/create_quinceanera.html', form=form)
 
-@registry.route('/create', methods=['GET', 'POST'])
+@registry.route('/create/<event_type>/<int:event_id>', methods=['GET', 'POST'])
 @login_required
-def create():
+def create(event_type, event_id):
+    # Verify event exists and belongs to user
+    event = None
+    if event_type == 'wedding':
+        event = Wedding.query.filter_by(id=event_id, user_id=current_user.id).first()
+    else:
+        event = Quinceanera.query.filter_by(id=event_id, user_id=current_user.id).first()
+
+    if not event:
+        flash('Event not found.', 'error')
+        return redirect(url_for('main.index'))
+
     form = RegistryForm()
     if form.validate_on_submit():
         registry = Registry(
             user=current_user,
+            event_type=event_type,
+            event_id=event_id,
             title=form.title.data,
             description=form.description.data,
             is_public=form.is_public.data
@@ -389,7 +404,7 @@ def create():
         flash('Registry created successfully!', 'success')
         return redirect(url_for('registry.edit', registry_id=registry.id))
 
-    return render_template('registry/create.html', form=form)
+    return render_template('registry/create.html', form=form, event=event)
 
 @registry.route('/<int:registry_id>')
 def view(registry_id):
@@ -534,3 +549,52 @@ def planning_services():
 @login_required
 def profile():
     return render_template('profile.html')
+
+@registry.route('/<int:registry_id>/suggestions')
+@login_required
+def suggestions(registry_id):
+    registry = Registry.query.get_or_404(registry_id)
+    if current_user.id != registry.user_id:
+        flash('You cannot view suggestions for this registry', 'error')
+        return redirect(url_for('main.index'))
+
+    # Get suggested gifts based on event type and popularity
+    suggestions = GiftSuggestion.query.filter_by(
+        event_type=registry.event_type
+    ).order_by(desc(GiftSuggestion.popularity_score)).limit(20).all()
+
+    # Randomize suggestions to provide variety
+    suggestions = random.sample(suggestions, min(len(suggestions), 12))
+
+    return render_template('registry/suggestions.html', 
+                         registry=registry, 
+                         suggestions=suggestions)
+
+@registry.route('/add-suggestion/<int:registry_id>/<int:suggestion_id>', methods=['POST'])
+@login_required
+def add_suggestion(registry_id, suggestion_id):
+    registry = Registry.query.get_or_404(registry_id)
+    suggestion = GiftSuggestion.query.get_or_404(suggestion_id)
+
+    if current_user.id != registry.user_id:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    # Create new registry item from suggestion
+    item = RegistryItem(
+        registry=registry,
+        name=suggestion.name,
+        description=suggestion.description,
+        item_type='physical',
+        price=None  # Will be updated when Amazon product is selected
+    )
+
+    # Increment popularity score
+    suggestion.popularity_score += 1
+
+    db.session.add(item)
+    db.session.commit()
+
+    return jsonify({
+        'success': True,
+        'message': 'Item added to registry'
+    })

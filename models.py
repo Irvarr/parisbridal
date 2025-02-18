@@ -45,11 +45,30 @@ class Quinceanera(db.Model):
 class Registry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    event_type = db.Column(db.String(20), nullable=False)  # 'wedding' or 'quinceanera'
+    event_id = db.Column(db.Integer, nullable=False)  # ID of the associated event
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text)
     is_public = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     items = db.relationship('RegistryItem', backref='registry', lazy=True)
+
+    @property
+    def event(self):
+        if self.event_type == 'wedding':
+            return Wedding.query.get(self.event_id)
+        return Quinceanera.query.get(self.event_id)
+
+class GiftSuggestion(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    category = db.Column(db.String(50), nullable=False)  # e.g., 'Kitchen', 'Home Decor', 'Electronics'
+    name = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text)
+    price_range = db.Column(db.String(50))  # e.g., '$0-50', '$50-100', '$100-200'
+    event_type = db.Column(db.String(20), nullable=False)  # 'wedding' or 'quinceanera'
+    amazon_query = db.Column(db.String(500))  # Search query for Amazon products
+    popularity_score = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class RegistryItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)

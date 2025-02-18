@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="suggestions-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Gift Suggestions for {{ registry.title }}</h2>
+        <a href="{{ url_for('registry.edit', registry_id=registry.id) }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Back to Registry
+        </a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-4">
+        {% for suggestion in suggestions %}
+        <div class="col">
+            <div class="card h-100 suggestion-card">
+                <div class="card-body">
+                    <span class="badge bg-primary mb-2">{{ suggestion.category }}</span>
+                    <h5 class="card-title">{{ suggestion.name }}</h5>
+                    <p class="card-text">{{ suggestion.description }}</p>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            Price Range: {{ suggestion.price_range }}
+                        </small>
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary add-suggestion" 
+                                data-registry-id="{{ registry.id }}"
+                                data-suggestion-id="{{ suggestion.id }}">
+                            <i class="fas fa-plus"></i> Add to Registry
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="suggestionToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <i class="fas fa-check-circle text-success me-2"></i>
+            <strong class="me-auto">Success</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            Item added to your registry!
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.add-suggestion');
+    const toast = new bootstrap.Toast(document.getElementById('suggestionToast'));
+
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            const registryId = this.dataset.registryId;
+            const suggestionId = this.dataset.suggestionId;
+            const button = this;
+
+            fetch(`/registry/add-suggestion/${registryId}/${suggestionId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    button.disabled = true;
+                    button.innerHTML = '<i class="fas fa-check"></i> Added';
+                    button.classList.replace('btn-outline-primary', 'btn-success');
+                    toast.show();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error adding item to registry');
+            });
+        });
+    });
+});
+</script>
+{% endblock %}
