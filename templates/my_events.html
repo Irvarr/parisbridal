@@ -16,8 +16,31 @@
                                 <strong>Date:</strong> {{ wedding.celebration_date.strftime('%B %d, %Y') }}<br>
                                 <strong>Location:</strong> {{ wedding.celebration_location or 'TBD' }}
                             </p>
-                            <a href="{{ url_for('guest.wedding_details', event_id=wedding.id) }}" 
-                               class="btn btn-primary">View Details</a>
+                            <div class="row g-3">
+                                <div class="col">
+                                    <a href="{{ url_for('guest.wedding_details', event_id=wedding.id) }}" 
+                                       class="btn btn-primary d-block">
+                                        <i class="fas fa-book-open fa-2x mb-2"></i><br>
+                                        View Details
+                                    </a>
+                                </div>
+                                {% set registry = Registry.query.filter_by(event_id=wedding.id, event_type='wedding').first() %}
+                                <div class="col">
+                                    {% if registry %}
+                                        <a href="{{ url_for('registry.edit', registry_id=registry.id) }}" 
+                                           class="btn btn-primary d-block">
+                                            <i class="fas fa-gift fa-2x mb-2"></i><br>
+                                            Our Registry
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ url_for('registry.create', event_type='wedding', event_id=wedding.id) }}" 
+                                           class="btn btn-primary d-block">
+                                            <i class="fas fa-gift fa-2x mb-2"></i><br>
+                                            Create Registry
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 {% endfor %}
@@ -25,7 +48,8 @@
                 <div class="text-center">
                     <p class="lead mb-4">You haven't created a wedding event yet.</p>
                     <a href="{{ url_for('guest.create_wedding') }}" class="btn btn-primary btn-lg">
-                        <i class="fas fa-plus me-2"></i>Create Wedding Event
+                        <i class="fas fa-plus fa-2x mb-2"></i><br>
+                        Create Wedding Event
                     </a>
                 </div>
             {% endif %}
@@ -44,8 +68,31 @@
                                 <strong>Date:</strong> {{ quinceanera.celebration_date.strftime('%B %d, %Y') }}<br>
                                 <strong>Location:</strong> {{ quinceanera.celebration_location or 'TBD' }}
                             </p>
-                            <a href="{{ url_for('guest.quinceanera_details', event_id=quinceanera.id) }}" 
-                               class="btn btn-primary">View Details</a>
+                            <div class="row g-3">
+                                <div class="col">
+                                    <a href="{{ url_for('guest.quinceanera_details', event_id=quinceanera.id) }}" 
+                                       class="btn btn-primary d-block">
+                                        <i class="fas fa-book-open fa-2x mb-2"></i><br>
+                                        View Details
+                                    </a>
+                                </div>
+                                {% set registry = Registry.query.filter_by(event_id=quinceanera.id, event_type='quinceanera').first() %}
+                                <div class="col">
+                                    {% if registry %}
+                                        <a href="{{ url_for('registry.edit', registry_id=registry.id) }}" 
+                                           class="btn btn-primary d-block">
+                                            <i class="fas fa-gift fa-2x mb-2"></i><br>
+                                            Our Registry
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ url_for('registry.create', event_type='quinceanera', event_id=quinceanera.id) }}" 
+                                           class="btn btn-primary d-block">
+                                            <i class="fas fa-gift fa-2x mb-2"></i><br>
+                                            Create Registry
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 {% endfor %}
@@ -53,7 +100,8 @@
                 <div class="text-center">
                     <p class="lead mb-4">You haven't created a quinceañera event yet.</p>
                     <a href="{{ url_for('guest.create_quinceanera') }}" class="btn btn-primary btn-lg">
-                        <i class="fas fa-plus me-2"></i>Create Quinceañera Event
+                        <i class="fas fa-plus fa-2x mb-2"></i><br>
+                        Create Quinceañera Event
                     </a>
                 </div>
             {% endif %}
@@ -65,10 +113,12 @@
             <div class="col-md-6">
                 <div class="d-grid gap-3">
                     <a href="{{ url_for('main.my_events', type='quinceanera') }}" class="btn btn-primary btn-lg">
-                        <i class="fas fa-crown me-2"></i>My Quinceañera
+                        <i class="fas fa-crown fa-2x mb-2"></i><br>
+                        My Quinceañera
                     </a>
                     <a href="{{ url_for('main.my_events', type='wedding') }}" class="btn btn-primary btn-lg">
-                        <i class="fas fa-ring me-2"></i>My Wedding
+                        <i class="fas fa-ring fa-2x mb-2"></i><br>
+                        My Wedding
                     </a>
                 </div>
             </div>

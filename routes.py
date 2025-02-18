@@ -633,4 +633,5 @@ def my_events():
     return render_template('my_events.html', 
                          weddings=weddings,
                          quinceaneras=quinceaneras,
-                         selected_type=event_type)
+                         selected_type=event_type,
+                         Registry=Registry)  # Make Registry model available in template
