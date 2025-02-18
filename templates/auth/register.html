@@ -5,13 +5,20 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-body">
-                <h2 class="card-title text-center mb-4">Create Account</h2>
+                <h2 class="card-title text-center mb-4">Create Your Wedding Account</h2>
                 <form method="POST">
                     {{ form.hidden_tag() }}
                     <div class="mb-3">
-                        {{ form.name.label(class="form-label") }}
-                        {{ form.name(class="form-control") }}
-                        {% for error in form.name.errors %}
+                        {{ form.partner1_name.label(class="form-label") }}
+                        {{ form.partner1_name(class="form-control") }}
+                        {% for error in form.partner1_name.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.partner2_name.label(class="form-label") }}
+                        {{ form.partner2_name(class="form-control") }}
+                        {% for error in form.partner2_name.errors %}
                             <span class="text-danger">{{ error }}</span>
                         {% endfor %}
                     </div>
@@ -36,8 +43,15 @@
                             <span class="text-danger">{{ error }}</span>
                         {% endfor %}
                     </div>
+                    <div class="mb-3">
+                        {{ form.wedding_location.label(class="form-label") }}
+                        {{ form.wedding_location(class="form-control") }}
+                        {% for error in form.wedding_location.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Register</button>
+                        <button type="submit" class="btn btn-primary">Create Account</button>
                     </div>
                 </form>
                 <p class="text-center mt-3">

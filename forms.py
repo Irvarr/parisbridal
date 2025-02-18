@@ -3,10 +3,12 @@ from wtforms import StringField, PasswordField, DateField, TextAreaField, Boolea
 from wtforms.validators import DataRequired, Email, Length, URL, Optional
 
 class RegisterForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired(), Length(min=2, max=100)])
+    partner1_name = StringField('Partner 1 Name', validators=[DataRequired(), Length(min=2, max=100)])
+    partner2_name = StringField('Partner 2 Name', validators=[DataRequired(), Length(min=2, max=100)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
-    wedding_date = DateField('Wedding Date', validators=[Optional()])
+    wedding_date = DateField('Wedding Date', validators=[DataRequired()])
+    wedding_location = StringField('Wedding Location (Optional)', validators=[Optional(), Length(max=200)])
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])

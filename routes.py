@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request,
 from flask_login import login_user, logout_user, login_required, current_user
 from datetime import datetime
 from app import db
-from models import User, Registry, RegistryItem
+from models import User, Registry, RegistryItem, Guest #Added Guest import
 from forms import RegisterForm, LoginForm, RegistryForm, RegistryItemForm, RegistrySearchForm, PurchaseForm
 
 main = Blueprint('main', __name__)
@@ -20,9 +20,11 @@ def search():
     if not query:
         return redirect(url_for('main.index'))
 
-    # Search for users by name or email
+    # Search for users by partner names or email
     users = User.query.filter(
-        (User.name.ilike(f'%{query}%')) | (User.email.ilike(f'%{query}%'))
+        (User.partner1_name.ilike(f'%{query}%')) |
+        (User.partner2_name.ilike(f'%{query}%')) |
+        (User.email.ilike(f'%{query}%'))
     ).all()
 
     # Get public registries for found users
@@ -48,9 +50,11 @@ def register():
             return render_template('auth/register.html', form=form)
 
         user = User(
-            name=form.name.data,
+            partner1_name=form.partner1_name.data,
+            partner2_name=form.partner2_name.data,
             email=form.email.data,
-            wedding_date=form.wedding_date.data
+            wedding_date=form.wedding_date.data,
+            wedding_location=form.wedding_location.data
         )
         user.set_password(form.password.data)
         try:

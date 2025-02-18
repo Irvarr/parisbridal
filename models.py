@@ -11,9 +11,13 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
-    name = db.Column(db.String(100), nullable=False)
-    wedding_date = db.Column(db.Date)
+    partner1_name = db.Column(db.String(100), nullable=False)
+    partner2_name = db.Column(db.String(100), nullable=False)
+    wedding_date = db.Column(db.Date, nullable=False)
+    wedding_location = db.Column(db.String(200))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     registry = db.relationship('Registry', backref='user', uselist=False)
+    guests = db.relationship('Guest', backref='user', lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -46,7 +50,19 @@ class RegistryItem(db.Model):
     bring_to_wedding = db.Column(db.Boolean, default=False)
     shipping_address = db.Column(db.Text)
     purchase_date = db.Column(db.DateTime)
-    priority_level = db.Column(db.String(20), default='normal')  # must-have, normal, nice-to-have
     experience_date = db.Column(db.Date)  # For experience gifts
     experience_location = db.Column(db.String(200))  # For experience gifts
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Guest(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120))
+    phone = db.Column(db.String(20))
+    rsvp_status = db.Column(db.String(20), default='pending')  # pending, attending, not_attending
+    number_of_guests = db.Column(db.Integer, default=1)
+    dietary_restrictions = db.Column(db.Text)
+    notes = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
