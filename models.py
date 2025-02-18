@@ -11,11 +11,10 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
-    partner1_name = db.Column(db.String(100), nullable=False)
-    partner2_name = db.Column(db.String(100), nullable=False)
-    wedding_date = db.Column(db.Date, nullable=False)
-    wedding_location = db.Column(db.String(200))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # Relationships
+    wedding = db.relationship('Wedding', backref='user', uselist=False)
+    quinceanera = db.relationship('Quinceanera', backref='user', uselist=False)
     registry = db.relationship('Registry', backref='user', uselist=False)
     guests = db.relationship('Guest', backref='user', lazy=True)
     wedding_party = db.relationship('WeddingPartyMember', backref='user', lazy=True)
@@ -25,6 +24,23 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+class Wedding(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    partner1_name = db.Column(db.String(100), nullable=False)
+    partner2_name = db.Column(db.String(100), nullable=False)
+    celebration_date = db.Column(db.Date, nullable=False)
+    celebration_location = db.Column(db.String(200))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Quinceanera(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    celebrant_name = db.Column(db.String(100), nullable=False)
+    celebration_date = db.Column(db.Date, nullable=False)
+    celebration_location = db.Column(db.String(200))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Registry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -65,7 +81,7 @@ class Guest(db.Model):
     number_of_guests = db.Column(db.Integer, default=1)
     dietary_restrictions = db.Column(db.Text)
     notes = db.Column(db.Text)
-    table_assignment = db.Column(db.String(50))  # For table assignments (e.g., "Table 1")
+    table_assignment = db.Column(db.String(50))  # For table assignments
     meal_choice = db.Column(db.String(20))  # For meal selection
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

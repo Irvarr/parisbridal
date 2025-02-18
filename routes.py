@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request,
 from flask_login import login_user, logout_user, login_required, current_user
 from datetime import datetime
 from app import db
-from models import User, Registry, RegistryItem, Guest, WeddingPartyMember
+from models import User, Registry, RegistryItem, Guest, WeddingPartyMember, Wedding, Quinceanera
 from forms import RegisterForm, LoginForm, RegistryForm, RegistryItemForm, RegistrySearchForm, PurchaseForm, GuestForm, WeddingPartyMemberForm
 
 main = Blueprint('main', __name__)
@@ -15,33 +15,6 @@ def index():
     search_form = RegistrySearchForm()
     return render_template('index.html', search_form=search_form)
 
-@main.route('/search')
-def search():
-    query = request.args.get('search', '').strip()
-    celebration_type = request.args.get('celebration_type', 'wedding')
-
-    if not query:
-        return redirect(url_for('main.index'))
-
-    # Search for users by partner names or email
-    users = User.query.filter(
-        (User.partner1_name.ilike(f'%{query}%')) |
-        (User.partner2_name.ilike(f'%{query}%')) |
-        (User.email.ilike(f'%{query}%'))
-    ).all()
-
-    # Get public registries for found users
-    registries = []
-    for user in users:
-        if user.registry and user.registry.is_public:
-            registries.append(user.registry)
-
-    return render_template('registry/search_results.html', 
-                         registries=registries, 
-                         query=query, 
-                         celebration_type=celebration_type)
-
-# Auth routes
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -49,22 +22,36 @@ def register():
 
     form = RegisterForm()
     if form.validate_on_submit():
-        # Check if user already exists
         existing_user = User.query.filter_by(email=form.email.data).first()
         if existing_user:
             flash('Email address already registered', 'error')
             return render_template('auth/register.html', form=form)
 
-        user = User(
-            partner1_name=form.partner1_name.data,
-            partner2_name=form.partner2_name.data,
-            email=form.email.data,
-            wedding_date=form.wedding_date.data,
-            wedding_location=form.wedding_location.data
-        )
+        user = User(email=form.email.data)
         user.set_password(form.password.data)
+
         try:
             db.session.add(user)
+            db.session.commit()
+
+            if form.celebration_type.data == 'wedding':
+                wedding = Wedding(
+                    user_id=user.id,
+                    partner1_name=form.partner1_name.data,
+                    partner2_name=form.partner2_name.data,
+                    celebration_date=form.celebration_date.data,
+                    celebration_location=form.celebration_location.data
+                )
+                db.session.add(wedding)
+            else:  # quinceanera
+                quinceanera = Quinceanera(
+                    user_id=user.id,
+                    celebrant_name=form.celebrant_name.data,
+                    celebration_date=form.celebration_date.data,
+                    celebration_location=form.celebration_location.data
+                )
+                db.session.add(quinceanera)
+
             db.session.commit()
             flash('Registration successful! Please login.', 'success')
             return redirect(url_for('auth.login'))
@@ -79,7 +66,7 @@ def register():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
-    
+
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -88,7 +75,7 @@ def login():
             next_page = request.args.get('next')
             return redirect(next_page or url_for('main.index'))
         flash('Invalid email or password', 'error')
-    
+
     return render_template('auth/login.html', form=form)
 
 @auth.route('/logout')
@@ -97,7 +84,190 @@ def logout():
     logout_user()
     return redirect(url_for('main.index'))
 
-# Registry routes
+@guest.route('/wedding-details')
+@login_required
+def wedding_details():
+    if not current_user.wedding:
+        flash('No wedding details found.', 'error')
+        return redirect(url_for('main.index'))
+    return render_template('guest/wedding_details.html', wedding=current_user.wedding)
+
+@guest.route('/quinceanera-details')
+@login_required
+def quinceanera_details():
+    if not current_user.quinceanera:
+        flash('No quinceañera details found.', 'error')
+        return redirect(url_for('main.index'))
+    return render_template('guest/quinceanera_details.html', quinceanera=current_user.quinceanera)
+
+
+@guest.route('/list')
+@login_required
+def list_guests():
+    guests = Guest.query.filter_by(user_id=current_user.id).order_by(Guest.name).all()
+    return render_template('guest/list.html', guests=guests)
+
+@guest.route('/add', methods=['GET', 'POST'])
+@login_required
+def add_guest():
+    form = GuestForm()
+    if form.validate_on_submit():
+        guest = Guest(
+            user_id=current_user.id,
+            name=form.name.data,
+            email=form.email.data,
+            phone=form.phone.data,
+            number_of_guests=form.number_of_guests.data,
+            table_assignment=form.table_assignment.data,
+            meal_choice=form.meal_choice.data,
+            dietary_restrictions=form.dietary_restrictions.data,
+            notes=form.notes.data
+        )
+        db.session.add(guest)
+        db.session.commit()
+        flash('Guest added successfully!', 'success')
+        return redirect(url_for('guest.list_guests'))
+    return render_template('guest/add.html', form=form)
+
+@guest.route('/<int:guest_id>/rsvp/<status>')
+def update_rsvp(guest_id, status):
+    guest = Guest.query.get_or_404(guest_id)
+    if status in ['attending', 'not_attending']:
+        guest.rsvp_status = status
+        db.session.commit()
+        flash('RSVP status updated!', 'success')
+    return redirect(url_for('guest.list_guests'))
+
+@guest.route('/wedding-party')
+@login_required
+def wedding_party():
+    bridesmaids = WeddingPartyMember.query.filter_by(
+        user_id=current_user.id, 
+        role_type='bridesmaid'
+    ).order_by(WeddingPartyMember.created_at).all()
+
+    groomsmen = WeddingPartyMember.query.filter_by(
+        user_id=current_user.id, 
+        role_type='groomsman'
+    ).order_by(WeddingPartyMember.created_at).all()
+
+    sponsors = WeddingPartyMember.query.filter_by(
+        user_id=current_user.id, 
+        role_type='sponsor'
+    ).order_by(WeddingPartyMember.created_at).all()
+
+    return render_template('guest/wedding_party.html',
+                         bridesmaids=bridesmaids,
+                         groomsmen=groomsmen,
+                         sponsors=sponsors)
+
+@guest.route('/wedding-party/add', methods=['GET', 'POST'])
+@login_required
+def add_party_member():
+    form = WeddingPartyMemberForm()
+    if form.validate_on_submit():
+        member = WeddingPartyMember(
+            user_id=current_user.id,
+            name=form.name.data,
+            role_type=form.role_type.data,
+            role_title=form.role_title.data,
+            email=form.email.data,
+            phone=form.phone.data,
+            notes=form.notes.data
+        )
+
+        existing_guest = Guest.query.filter_by(
+            user_id=current_user.id,
+            email=form.email.data,
+            name=form.name.data
+        ).first()
+
+        if not existing_guest:
+            guest = Guest(
+                user_id=current_user.id,
+                name=form.name.data,
+                email=form.email.data,
+                phone=form.phone.data,
+                rsvp_status='attending', 
+                number_of_guests=1,
+                notes=f"Wedding Party Member - {form.role_type.data.title()}"
+                + (f" ({form.role_title.data})" if form.role_title.data else ""),
+                table_assignment=form.table_assignment.data if hasattr(form, 'table_assignment') else None,
+                meal_choice=form.meal_choice.data if hasattr(form, 'meal_choice') else 'no_preference'
+            )
+            db.session.add(guest)
+
+        db.session.add(member)
+        try:
+            db.session.commit()
+            flash('Wedding party member added successfully and automatically added to guest list!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred. Please try again.', 'error')
+            return render_template('guest/add_party_member.html', form=form)
+
+        return redirect(url_for('guest.wedding_party'))
+    return render_template('guest/add_party_member.html', form=form)
+
+@guest.route('/wedding-party/<int:member_id>/delete', methods=['POST'])
+@login_required
+def delete_party_member(member_id):
+    member = WeddingPartyMember.query.get_or_404(member_id)
+    if member.user_id != current_user.id:
+        flash('You are not authorized to delete this member.', 'error')
+        return redirect(url_for('guest.wedding_party'))
+
+    db.session.delete(member)
+    db.session.commit()
+    flash('Wedding party member removed successfully.', 'success')
+    return redirect(url_for('guest.wedding_party'))
+
+@guest.route('/<int:guest_id>/update-count', methods=['POST'])
+@login_required
+def update_guest_count(guest_id):
+    guest = Guest.query.get_or_404(guest_id)
+    if guest.user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    data = request.get_json()
+    count = data.get('count', 1)
+
+    if count < 1:
+        return jsonify({'error': 'Guest count must be at least 1'}), 400
+
+    guest.number_of_guests = count
+    db.session.commit()
+    return jsonify({'success': True})
+
+@guest.route('/<int:guest_id>/update-table', methods=['POST'])
+@login_required
+def update_table_assignment(guest_id):
+    guest = Guest.query.get_or_404(guest_id)
+    if guest.user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    data = request.get_json()
+    table = data.get('table')
+    guest.table_assignment = table
+    db.session.commit()
+    return jsonify({'success': True})
+
+@guest.route('/<int:guest_id>/update-meal', methods=['POST'])
+@login_required
+def update_meal_choice(guest_id):
+    guest = Guest.query.get_or_404(guest_id)
+    if guest.user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    data = request.get_json()
+    meal = data.get('meal')
+    if meal not in ['no_preference', 'chicken', 'salmon', 'steak', 'vegan']:
+        return jsonify({'error': 'Invalid meal choice'}), 400
+
+    guest.meal_choice = meal
+    db.session.commit()
+    return jsonify({'success': True})
+
 @registry.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
@@ -113,7 +283,7 @@ def create():
         db.session.commit()
         flash('Registry created successfully!', 'success')
         return redirect(url_for('registry.edit', registry_id=registry.id))
-    
+
     return render_template('registry/create.html', form=form)
 
 @registry.route('/<int:registry_id>')
@@ -122,7 +292,7 @@ def view(registry_id):
     if not registry.is_public and (not current_user.is_authenticated or current_user.id != registry.user_id):
         flash('This registry is private', 'error')
         return redirect(url_for('main.index'))
-    
+
     return render_template('registry/view.html', registry=registry)
 
 @registry.route('/<int:registry_id>/edit', methods=['GET', 'POST'])
@@ -206,185 +376,26 @@ def delete_item(item_id):
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
+@main.route('/search')
+def search():
+    query = request.args.get('search', '').strip()
+    celebration_type = request.args.get('celebration_type', 'wedding')
 
-# Guest routes
-@guest.route('/list')
-@login_required
-def list_guests():
-    guests = Guest.query.filter_by(user_id=current_user.id).order_by(Guest.name).all()
-    return render_template('guest/list.html', guests=guests)
+    if not query:
+        return redirect(url_for('main.index'))
 
-@guest.route('/add', methods=['GET', 'POST'])
-@login_required
-def add_guest():
-    form = GuestForm()
-    if form.validate_on_submit():
-        guest = Guest(
-            user_id=current_user.id,
-            name=form.name.data,
-            email=form.email.data,
-            phone=form.phone.data,
-            number_of_guests=form.number_of_guests.data,
-            table_assignment=form.table_assignment.data,
-            meal_choice=form.meal_choice.data,
-            dietary_restrictions=form.dietary_restrictions.data,
-            notes=form.notes.data
-        )
-        db.session.add(guest)
-        db.session.commit()
-        flash('Guest added successfully!', 'success')
-        return redirect(url_for('guest.list_guests'))
-    return render_template('guest/add.html', form=form)
+    users = User.query.filter(
+        (User.partner1_name.ilike(f'%{query}%')) |
+        (User.partner2_name.ilike(f'%{query}%')) |
+        (User.email.ilike(f'%{query}%'))
+    ).all()
 
-@guest.route('/wedding-details')
-@login_required
-def wedding_details():
-    return render_template('guest/wedding_details.html')
+    registries = []
+    for user in users:
+        if user.registry and user.registry.is_public:
+            registries.append(user.registry)
 
-@guest.route('/quinceanera-details')
-@login_required
-def quinceanera_details():
-    return render_template('guest/quinceanera_details.html')
-
-@guest.route('/<int:guest_id>/rsvp/<status>')
-def update_rsvp(guest_id, status):
-    guest = Guest.query.get_or_404(guest_id)
-    if status in ['attending', 'not_attending']:
-        guest.rsvp_status = status
-        db.session.commit()
-        flash('RSVP status updated!', 'success')
-    return redirect(url_for('guest.list_guests'))
-
-@guest.route('/wedding-party')
-@login_required
-def wedding_party():
-    bridesmaids = WeddingPartyMember.query.filter_by(
-        user_id=current_user.id, 
-        role_type='bridesmaid'
-    ).order_by(WeddingPartyMember.created_at).all()
-
-    groomsmen = WeddingPartyMember.query.filter_by(
-        user_id=current_user.id, 
-        role_type='groomsman'
-    ).order_by(WeddingPartyMember.created_at).all()
-
-    sponsors = WeddingPartyMember.query.filter_by(
-        user_id=current_user.id, 
-        role_type='sponsor'
-    ).order_by(WeddingPartyMember.created_at).all()
-
-    return render_template('guest/wedding_party.html',
-                         bridesmaids=bridesmaids,
-                         groomsmen=groomsmen,
-                         sponsors=sponsors)
-
-@guest.route('/wedding-party/add', methods=['GET', 'POST'])
-@login_required
-def add_party_member():
-    form = WeddingPartyMemberForm()
-    if form.validate_on_submit():
-        # Create wedding party member
-        member = WeddingPartyMember(
-            user_id=current_user.id,
-            name=form.name.data,
-            role_type=form.role_type.data,
-            role_title=form.role_title.data,
-            email=form.email.data,
-            phone=form.phone.data,
-            notes=form.notes.data
-        )
-
-        # Check if person is already in guest list
-        existing_guest = Guest.query.filter_by(
-            user_id=current_user.id,
-            email=form.email.data,
-            name=form.name.data
-        ).first()
-
-        if not existing_guest:
-            # Add to guest list automatically
-            guest = Guest(
-                user_id=current_user.id,
-                name=form.name.data,
-                email=form.email.data,
-                phone=form.phone.data,
-                rsvp_status='attending',  # Wedding party members are automatically attending
-                number_of_guests=1,
-                notes=f"Wedding Party Member - {form.role_type.data.title()}"
-                + (f" ({form.role_title.data})" if form.role_title.data else ""),
-                table_assignment=form.table_assignment.data if hasattr(form, 'table_assignment') else None,
-                meal_choice=form.meal_choice.data if hasattr(form, 'meal_choice') else 'no_preference'
-            )
-            db.session.add(guest)
-
-        db.session.add(member)
-        try:
-            db.session.commit()
-            flash('Wedding party member added successfully and automatically added to guest list!', 'success')
-        except Exception as e:
-            db.session.rollback()
-            flash('An error occurred. Please try again.', 'error')
-            return render_template('guest/add_party_member.html', form=form)
-
-        return redirect(url_for('guest.wedding_party'))
-    return render_template('guest/add_party_member.html', form=form)
-
-@guest.route('/wedding-party/<int:member_id>/delete', methods=['POST'])
-@login_required
-def delete_party_member(member_id):
-    member = WeddingPartyMember.query.get_or_404(member_id)
-    if member.user_id != current_user.id:
-        flash('You are not authorized to delete this member.', 'error')
-        return redirect(url_for('guest.wedding_party'))
-
-    db.session.delete(member)
-    db.session.commit()
-    flash('Wedding party member removed successfully.', 'success')
-    return redirect(url_for('guest.wedding_party'))
-
-# Add these new routes after the existing guest routes
-@guest.route('/<int:guest_id>/update-count', methods=['POST'])
-@login_required
-def update_guest_count(guest_id):
-    guest = Guest.query.get_or_404(guest_id)
-    if guest.user_id != current_user.id:
-        return jsonify({'error': 'Unauthorized'}), 403
-
-    data = request.get_json()
-    count = data.get('count', 1)
-
-    if count < 1:
-        return jsonify({'error': 'Guest count must be at least 1'}), 400
-
-    guest.number_of_guests = count
-    db.session.commit()
-    return jsonify({'success': True})
-
-@guest.route('/<int:guest_id>/update-table', methods=['POST'])
-@login_required
-def update_table_assignment(guest_id):
-    guest = Guest.query.get_or_404(guest_id)
-    if guest.user_id != current_user.id:
-        return jsonify({'error': 'Unauthorized'}), 403
-
-    data = request.get_json()
-    table = data.get('table')
-    guest.table_assignment = table
-    db.session.commit()
-    return jsonify({'success': True})
-
-@guest.route('/<int:guest_id>/update-meal', methods=['POST'])
-@login_required
-def update_meal_choice(guest_id):
-    guest = Guest.query.get_or_404(guest_id)
-    if guest.user_id != current_user.id:
-        return jsonify({'error': 'Unauthorized'}), 403
-
-    data = request.get_json()
-    meal = data.get('meal')
-    if meal not in ['no_preference', 'chicken', 'salmon', 'steak', 'vegan']:
-        return jsonify({'error': 'Invalid meal choice'}), 400
-
-    guest.meal_choice = meal
-    db.session.commit()
-    return jsonify({'success': True})
+    return render_template('registry/search_results.html', 
+                         registries=registries, 
+                         query=query, 
+                         celebration_type=celebration_type)

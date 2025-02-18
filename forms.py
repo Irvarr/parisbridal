@@ -1,14 +1,22 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, DateField, TextAreaField, BooleanField, FloatField, SearchField, SelectField
+from wtforms import StringField, PasswordField, DateField, TextAreaField, BooleanField, FloatField, SearchField, SelectField, RadioField
 from wtforms.validators import DataRequired, Email, Length, URL, Optional
 
 class RegisterForm(FlaskForm):
-    partner1_name = StringField('Partner 1 Name', validators=[DataRequired(), Length(min=2, max=100)])
-    partner2_name = StringField('Partner 2 Name', validators=[DataRequired(), Length(min=2, max=100)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
-    wedding_date = DateField('Wedding Date', validators=[DataRequired()])
-    wedding_location = StringField('Wedding Location (Optional)', validators=[Optional(), Length(max=200)])
+    celebration_type = RadioField('Celebration Type', 
+        choices=[('wedding', 'Wedding'), ('quinceanera', 'Quinceañera')],
+        validators=[DataRequired()]
+    )
+    # Wedding Fields
+    partner1_name = StringField('Partner 1 Name', validators=[Optional(), Length(min=2, max=100)])
+    partner2_name = StringField('Partner 2 Name', validators=[Optional(), Length(min=2, max=100)])
+    # Quinceañera Fields
+    celebrant_name = StringField('Celebrant Name', validators=[Optional(), Length(min=2, max=100)])
+    # Common Fields
+    celebration_date = DateField('Celebration Date', validators=[DataRequired()])
+    celebration_location = StringField('Location (Optional)', validators=[Optional(), Length(max=200)])
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -44,14 +52,14 @@ class PurchaseForm(FlaskForm):
     purchased_by = StringField('Your Name', validators=[DataRequired()])
     delivery_choice = StringField('Delivery Method', validators=[DataRequired()])
     ship_to_couple = BooleanField('Ship to Couple', default=True)
-    bring_to_wedding = BooleanField('I will bring this gift to the wedding', default=False)
+    bring_to_wedding = BooleanField('I will bring this gift to the celebration', default=False)
     shipping_address = TextAreaField('Shipping Address', validators=[Optional()])
 
 class GuestForm(FlaskForm):
     name = StringField('Guest Name', validators=[DataRequired(), Length(max=100)])
     email = StringField('Email', validators=[Optional(), Email()])
     phone = StringField('Phone', validators=[Optional(), Length(max=20)])
-    number_of_guests = StringField('Number of Guests', validators=[DataRequired()], default=1)
+    number_of_guests = StringField('Number of Guests', validators=[DataRequired()])
     table_assignment = StringField('Table Assignment', validators=[Optional(), Length(max=50)])
     meal_choice = SelectField('Meal Preference',
         choices=[
