@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-5">My Events</h1>
+
+    {% if selected_type == 'wedding' %}
+        <div class="mb-5">
+            <h2 class="mb-4">My Wedding</h2>
+            {% if weddings and weddings|length > 0 %}
+                {% for wedding in weddings %}
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h3 class="card-title">{{ wedding.partner1_name }} & {{ wedding.partner2_name }}</h3>
+                            <p class="card-text">
+                                <strong>Date:</strong> {{ wedding.celebration_date.strftime('%B %d, %Y') }}<br>
+                                <strong>Location:</strong> {{ wedding.celebration_location or 'TBD' }}
+                            </p>
+                            <a href="{{ url_for('guest.wedding_details', event_id=wedding.id) }}" 
+                               class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center">
+                    <p class="lead mb-4">You haven't created a wedding event yet.</p>
+                    <a href="{{ url_for('guest.create_wedding') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus me-2"></i>Create Wedding Event
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if selected_type == 'quinceanera' %}
+        <div class="mb-5">
+            <h2 class="mb-4">My Quinceañera</h2>
+            {% if quinceaneras and quinceaneras|length > 0 %}
+                {% for quinceanera in quinceaneras %}
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h3 class="card-title">{{ quinceanera.celebrant_name }}'s Quinceañera</h3>
+                            <p class="card-text">
+                                <strong>Date:</strong> {{ quinceanera.celebration_date.strftime('%B %d, %Y') }}<br>
+                                <strong>Location:</strong> {{ quinceanera.celebration_location or 'TBD' }}
+                            </p>
+                            <a href="{{ url_for('guest.quinceanera_details', event_id=quinceanera.id) }}" 
+                               class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center">
+                    <p class="lead mb-4">You haven't created a quinceañera event yet.</p>
+                    <a href="{{ url_for('guest.create_quinceanera') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus me-2"></i>Create Quinceañera Event
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if not selected_type %}
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-6">
+                <div class="d-grid gap-3">
+                    <a href="{{ url_for('main.my_events', type='quinceanera') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-crown me-2"></i>My Quinceañera
+                    </a>
+                    <a href="{{ url_for('main.my_events', type='wedding') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-ring me-2"></i>My Wedding
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

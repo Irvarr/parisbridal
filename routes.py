@@ -616,3 +616,19 @@ def add_suggestion(registry_id, suggestion_id):
         'success': True,
         'message': 'Item added to registry'
     })
+
+# Add after the profile route
+@main.route('/my-events')
+@login_required
+def my_events():
+    # Get user's events
+    weddings = current_user.weddings
+    quinceaneras = current_user.quinceaneras
+
+    # Get the event type from query param if provided
+    event_type = request.args.get('type', None)
+
+    return render_template('my_events.html', 
+                         weddings=weddings,
+                         quinceaneras=quinceaneras,
+                         selected_type=event_type)
