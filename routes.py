@@ -307,9 +307,11 @@ def update_meal_choice(guest_id):
 @guest.route('/create-wedding', methods=['GET', 'POST'])
 @login_required
 def create_wedding():
-    if current_user.wedding:
+    # Check if user has any weddings
+    existing_weddings = current_user.weddings
+    if existing_weddings and len(existing_weddings) > 0:
         flash('You already have a wedding created.', 'warning')
-        return redirect(url_for('guest.wedding_details', event_id=current_user.wedding.id))
+        return redirect(url_for('guest.wedding_details', event_id=existing_weddings[0].id))
 
     form = CreateWeddingForm()
     if request.method == 'POST':
@@ -343,9 +345,11 @@ def create_wedding():
 @guest.route('/create-quinceanera', methods=['GET', 'POST'])
 @login_required
 def create_quinceanera():
-    if current_user.quinceanera:
+    # Check if user has any quinceaneras
+    existing_quinceaneras = current_user.quinceaneras
+    if existing_quinceaneras and len(existing_quinceaneras) > 0:
         flash('You already have a quinceañera created.', 'warning')
-        return redirect(url_for('guest.quinceanera_details', event_id=current_user.quinceanera.id))
+        return redirect(url_for('guest.quinceanera_details', event_id=existing_quinceaneras[0].id))
 
     form = CreateQuinceaneraForm()
     if request.method == 'POST':
