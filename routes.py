@@ -109,7 +109,9 @@ def wedding_details(event_id):
         return redirect(url_for('main.profile'))
 
     logger.debug(f"Found wedding: {wedding.id}")
-    return render_template('guest/wedding_details.html', wedding=wedding)
+    return render_template('guest/wedding_details.html', 
+                         wedding=wedding, 
+                         Registry=Registry)  # Make Registry model available in template
 
 @guest.route('/quinceanera-details/<int:event_id>')
 @login_required
