@@ -66,8 +66,8 @@
                                     </td>
                                     <td>
                                         <div class="btn-group">
-                                            <button class="btn btn-sm btn-outline-danger" 
-                                                    onclick="deleteItem({{ item.id }})">
+                                            <button class="btn btn-sm btn-outline-danger delete-item" 
+                                                    data-item-id="{{ item.id }}">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                             {% if item.amazon_url %}
@@ -92,4 +92,8 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/registry.js') }}"></script>
 {% endblock %}

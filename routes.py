@@ -176,3 +176,18 @@ def purchase(item_id):
             flash('An error occurred. Please try again.', 'error')
 
     return render_template('registry/purchase.html', form=form, item=item)
+
+@registry.route('/item/<int:item_id>', methods=['DELETE'])
+@login_required
+def delete_item(item_id):
+    item = RegistryItem.query.get_or_404(item_id)
+    if item.registry.user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    try:
+        db.session.delete(item)
+        db.session.commit()
+        return jsonify({'message': 'Item deleted successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
