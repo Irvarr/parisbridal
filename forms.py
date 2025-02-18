@@ -9,6 +9,11 @@ class RegisterForm(FlaskForm):
         choices=[('wedding', 'Wedding'), ('quinceanera', 'Quinceañera')],
         validators=[DataRequired()]
     )
+    # Wedding-specific fields
+    partner1_name = StringField('Partner 1 Name', validators=[Optional(), Length(min=2, max=100)])
+    partner2_name = StringField('Partner 2 Name', validators=[Optional(), Length(min=2, max=100)])
+    # Quinceañera-specific fields
+    celebrant_name = StringField('Celebrant Name', validators=[Optional(), Length(min=2, max=100)])
     # Common Fields
     celebration_date = DateField('Celebration Date', validators=[DataRequired()])
     celebration_location = StringField('Location (Optional)', validators=[Optional(), Length(max=200)])
