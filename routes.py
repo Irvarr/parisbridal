@@ -147,76 +147,100 @@ def update_rsvp(guest_id, status):
         flash('RSVP status updated!', 'success')
     return redirect(url_for('guest.list_guests'))
 
-@guest.route('/wedding-party')
+@guest.route('/wedding-party/<int:event_id>')
 @login_required
-def wedding_party():
-    bridesmaids = WeddingPartyMember.query.filter_by(
-        user_id=current_user.id, 
-        role_type='bridesmaid'
-    ).order_by(WeddingPartyMember.created_at).all()
+def wedding_party(event_id=None):
+    # Get the specific event
+    wedding = Wedding.query.filter_by(id=event_id, user_id=current_user.id).first()
+    quinceanera = Quinceanera.query.filter_by(id=event_id, user_id=current_user.id).first()
 
-    groomsmen = WeddingPartyMember.query.filter_by(
-        user_id=current_user.id, 
-        role_type='groomsman'
-    ).order_by(WeddingPartyMember.created_at).all()
+    if not wedding and not quinceanera:
+        flash('Event not found.', 'error')
+        return redirect(url_for('main.profile'))
 
-    sponsors = WeddingPartyMember.query.filter_by(
-        user_id=current_user.id, 
-        role_type='sponsor'
-    ).order_by(WeddingPartyMember.created_at).all()
+    event_type = 'wedding' if wedding else 'quinceanera'
 
-    return render_template('guest/wedding_party.html',
+    # Get party members for this specific event
+    party_members = WeddingPartyMember.query.filter_by(
+        event_id=event_id,
+        user_id=current_user.id
+    ).order_by(WeddingPartyMember.role_type, WeddingPartyMember.created_at).all()
+
+    # Organize members by role
+    bridesmaids = [m for m in party_members if m.role_type == 'bridesmaid']
+    groomsmen = [m for m in party_members if m.role_type == 'groomsman']
+    sponsors = [m for m in party_members if m.role_type == 'sponsor']
+
+    template = 'guest/wedding_party.html' if event_type == 'wedding' else 'guest/quinceanera_court.html'
+
+    return render_template(template,
+                         event=wedding or quinceanera,
                          bridesmaids=bridesmaids,
                          groomsmen=groomsmen,
-                         sponsors=sponsors)
+                         sponsors=sponsors,
+                         event_type=event_type)
 
-@guest.route('/wedding-party/add', methods=['GET', 'POST'])
+@guest.route('/wedding-party/add/<int:event_id>', methods=['GET', 'POST'])
 @login_required
-def add_party_member():
+def add_party_member(event_id):
+    # Verify event exists and belongs to user
+    wedding = Wedding.query.filter_by(id=event_id, user_id=current_user.id).first()
+    quinceanera = Quinceanera.query.filter_by(id=event_id, user_id=current_user.id).first()
+
+    if not wedding and not quinceanera:
+        flash('Event not found.', 'error')
+        return redirect(url_for('main.profile'))
+
     form = WeddingPartyMemberForm()
     if form.validate_on_submit():
-        member = WeddingPartyMember(
-            user_id=current_user.id,
-            name=form.name.data,
-            role_type=form.role_type.data,
-            role_title=form.role_title.data,
-            email=form.email.data,
-            phone=form.phone.data,
-            notes=form.notes.data
-        )
-
-        existing_guest = Guest.query.filter_by(
-            user_id=current_user.id,
-            email=form.email.data,
-            name=form.name.data
-        ).first()
-
-        if not existing_guest:
-            guest = Guest(
+        try:
+            member = WeddingPartyMember(
                 user_id=current_user.id,
+                event_id=event_id,
                 name=form.name.data,
+                role_type=form.role_type.data,
+                role_title=form.role_title.data,
                 email=form.email.data,
                 phone=form.phone.data,
-                rsvp_status='attending', 
-                number_of_guests=1,
-                notes=f"Wedding Party Member - {form.role_type.data.title()}"
-                + (f" ({form.role_title.data})" if form.role_title.data else ""),
-                table_assignment=form.table_assignment.data if hasattr(form, 'table_assignment') else None,
-                meal_choice=form.meal_choice.data if hasattr(form, 'meal_choice') else 'no_preference'
+                notes=form.notes.data
             )
-            db.session.add(guest)
 
-        db.session.add(member)
-        try:
+            # Add to guest list if not already present
+            existing_guest = Guest.query.filter_by(
+                event_id=event_id,
+                user_id=current_user.id,
+                email=form.email.data,
+                name=form.name.data
+            ).first()
+
+            if not existing_guest:
+                guest = Guest(
+                    user_id=current_user.id,
+                    event_id=event_id,
+                    name=form.name.data,
+                    email=form.email.data,
+                    phone=form.phone.data,
+                    rsvp_status='attending',
+                    number_of_guests=1,
+                    notes=f"{'Wedding' if wedding else 'Quinceañera'} Party Member - {form.role_type.data.title()}"
+                    + (f" ({form.role_title.data})" if form.role_title.data else ""),
+                    table_assignment=form.table_assignment.data if hasattr(form, 'table_assignment') else None,
+                    meal_choice=form.meal_choice.data if hasattr(form, 'meal_choice') else 'no_preference'
+                )
+                db.session.add(guest)
+
+            db.session.add(member)
             db.session.commit()
-            flash('Wedding party member added successfully and automatically added to guest list!', 'success')
-        except Exception as e:
-            db.session.rollback()
-            flash('An error occurred. Please try again.', 'error')
-            return render_template('guest/add_party_member.html', form=form)
+            flash('Party member added successfully and automatically added to guest list!', 'success')
 
-        return redirect(url_for('guest.wedding_party'))
-    return render_template('guest/add_party_member.html', form=form)
+            return redirect(url_for('guest.wedding_party', event_id=event_id))
+
+        except Exception as e:
+            logger.error(f"Error adding party member: {str(e)}")
+            db.session.rollback()
+            flash('An error occurred while adding the party member. Please try again.', 'error')
+
+    return render_template('guest/add_party_member.html', form=form, event_id=event_id)
 
 @guest.route('/wedding-party/<int:member_id>/delete', methods=['POST'])
 @login_required
@@ -224,12 +248,12 @@ def delete_party_member(member_id):
     member = WeddingPartyMember.query.get_or_404(member_id)
     if member.user_id != current_user.id:
         flash('You are not authorized to delete this member.', 'error')
-        return redirect(url_for('guest.wedding_party'))
+        return redirect(url_for('guest.wedding_party', event_id=member.event_id)) # added event_id
 
     db.session.delete(member)
     db.session.commit()
     flash('Wedding party member removed successfully.', 'success')
-    return redirect(url_for('guest.wedding_party'))
+    return redirect(url_for('guest.wedding_party', event_id=member.event_id)) # added event_id
 
 @guest.route('/<int:guest_id>/update-count', methods=['POST'])
 @login_required
@@ -504,3 +528,8 @@ def decorations():
 @services.route('/planning-services')
 def planning_services():
     return render_template('services/planning_services.html')
+
+@main.route('/profile')
+@login_required
+def profile():
+    return render_template('profile.html')

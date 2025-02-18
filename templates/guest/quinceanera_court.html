@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center mb-5">Mi Corte de Honor</h1>
+    
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="d-flex justify-content-end">
+                <a href="{{ url_for('guest.add_party_member', event_id=event.id) }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Add Court Member
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Damas (Bridesmaids) -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Damas</h3>
+                </div>
+                <div class="card-body">
+                    {% if bridesmaids %}
+                        <ul class="list-group list-group-flush">
+                        {% for member in bridesmaids %}
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-1">{{ member.name }}</h5>
+                                        {% if member.role_title %}
+                                            <small class="text-muted">{{ member.role_title }}</small>
+                                        {% endif %}
+                                    </div>
+                                    <form action="{{ url_for('guest.delete_party_member', member_id=member.id) }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to remove this member?')">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted text-center">No damas added yet</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Chambelanes (Groomsmen) -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Chambelanes</h3>
+                </div>
+                <div class="card-body">
+                    {% if groomsmen %}
+                        <ul class="list-group list-group-flush">
+                        {% for member in groomsmen %}
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-1">{{ member.name }}</h5>
+                                        {% if member.role_title %}
+                                            <small class="text-muted">{{ member.role_title }}</small>
+                                        {% endif %}
+                                    </div>
+                                    <form action="{{ url_for('guest.delete_party_member', member_id=member.id) }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to remove this member?')">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted text-center">No chambelanes added yet</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Padrinos/Madrinas -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Padrinos/Madrinas</h3>
+                </div>
+                <div class="card-body">
+                    {% if sponsors %}
+                        <ul class="list-group list-group-flush">
+                        {% for member in sponsors %}
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-1">{{ member.name }}</h5>
+                                        {% if member.role_title %}
+                                            <small class="text-muted">{{ member.role_title }}</small>
+                                        {% endif %}
+                                    </div>
+                                    <form action="{{ url_for('guest.delete_party_member', member_id=member.id) }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to remove this member?')">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted text-center">No padrinos/madrinas added yet</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
