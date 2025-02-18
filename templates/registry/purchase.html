@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-body">
                     <h2 class="card-title text-center mb-4">Purchase Gift</h2>
-                    
+
                     <div class="mb-4">
                         <h5>Item Details</h5>
                         <p><strong>{{ item.name }}</strong></p>
@@ -27,7 +27,7 @@
 
                     <form method="POST" class="mt-4">
                         {{ form.hidden_tag() }}
-                        
+
                         <div class="mb-3">
                             {{ form.purchased_by.label(class="form-label") }}
                             {{ form.purchased_by(class="form-control") }}
@@ -36,12 +36,32 @@
                             {% endfor %}
                         </div>
 
-                        <div class="mb-3 form-check">
-                            {{ form.ship_to_couple(class="form-check-input") }}
-                            {{ form.ship_to_couple.label(class="form-check-label") }}
+                        <div class="mb-4">
+                            <h5>Delivery Options</h5>
+                            <div class="form-check mb-2">
+                                <input type="radio" class="form-check-input" id="shipToCouple" 
+                                       name="delivery_choice" value="ship_to_couple" checked>
+                                <label class="form-check-label" for="shipToCouple">
+                                    Ship directly to the couple
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input type="radio" class="form-check-input" id="shipToMe" 
+                                       name="delivery_choice" value="ship_to_me">
+                                <label class="form-check-label" for="shipToMe">
+                                    Ship to my address
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input type="radio" class="form-check-input" id="bringToWedding" 
+                                       name="delivery_choice" value="bring_to_wedding">
+                                <label class="form-check-label" for="bringToWedding">
+                                    I'll bring this gift to the wedding
+                                </label>
+                            </div>
                         </div>
 
-                        <div class="mb-3" id="shippingAddressField">
+                        <div class="mb-3" id="shippingAddressField" style="display: none;">
                             {{ form.shipping_address.label(class="form-label") }}
                             {{ form.shipping_address(class="form-control", rows=3) }}
                             {% for error in form.shipping_address.errors %}
@@ -51,7 +71,7 @@
 
                         <div class="d-grid">
                             <button type="submit" class="btn btn-success btn-lg">
-                                Mark as Purchased
+                                Confirm Purchase
                             </button>
                         </div>
                     </form>
@@ -64,14 +84,18 @@
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const shipToCoupleCheckbox = document.getElementById('ship_to_couple');
+    const deliveryChoices = document.getElementsByName('delivery_choice');
     const shippingAddressField = document.getElementById('shippingAddressField');
-    
+
     function updateShippingAddress() {
-        shippingAddressField.style.display = shipToCoupleCheckbox.checked ? 'none' : 'block';
+        const selectedDelivery = Array.from(deliveryChoices).find(radio => radio.checked).value;
+        shippingAddressField.style.display = selectedDelivery === 'ship_to_me' ? 'block' : 'none';
     }
-    
-    shipToCoupleCheckbox.addEventListener('change', updateShippingAddress);
+
+    deliveryChoices.forEach(choice => {
+        choice.addEventListener('change', updateShippingAddress);
+    });
+
     updateShippingAddress();
 });
 </script>

@@ -40,6 +40,7 @@ class RegistryItem(db.Model):
     is_purchased = db.Column(db.Boolean, default=False)
     purchased_by = db.Column(db.String(100))
     ship_to_couple = db.Column(db.Boolean, default=True)
+    bring_to_wedding = db.Column(db.Boolean, default=False)
     shipping_address = db.Column(db.Text)
     purchase_date = db.Column(db.DateTime)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

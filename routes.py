@@ -150,8 +150,21 @@ def purchase(item_id):
     if form.validate_on_submit():
         item.is_purchased = True
         item.purchased_by = form.purchased_by.data
-        item.ship_to_couple = form.ship_to_couple.data
-        item.shipping_address = form.shipping_address.data if not form.ship_to_couple.data else None
+
+        delivery_choice = request.form.get('delivery_choice')
+        if delivery_choice == 'ship_to_couple':
+            item.ship_to_couple = True
+            item.bring_to_wedding = False
+            item.shipping_address = None
+        elif delivery_choice == 'ship_to_me':
+            item.ship_to_couple = False
+            item.bring_to_wedding = False
+            item.shipping_address = form.shipping_address.data
+        else:  # bring_to_wedding
+            item.ship_to_couple = False
+            item.bring_to_wedding = True
+            item.shipping_address = None
+
         item.purchase_date = datetime.utcnow()
 
         try:

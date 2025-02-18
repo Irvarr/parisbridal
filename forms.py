@@ -28,5 +28,7 @@ class RegistrySearchForm(FlaskForm):
 
 class PurchaseForm(FlaskForm):
     purchased_by = StringField('Your Name', validators=[DataRequired()])
+    delivery_choice = StringField('Delivery Method', validators=[DataRequired()])
     ship_to_couple = BooleanField('Ship to Couple', default=True)
+    bring_to_wedding = BooleanField('I will bring this gift to the wedding', default=False)
     shipping_address = TextAreaField('Shipping Address', validators=[Optional()])
