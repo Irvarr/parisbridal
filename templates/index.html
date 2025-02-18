@@ -2,6 +2,9 @@
 
 {% block content %}
 <div class="text-center py-5">
+    <div class="logo-container mb-4">
+        <img src="/static/assets/brids-02.png" alt="Paris Bridal Logo" class="logo-img">
+    </div>
     <h1 class="display-4 mb-4">Welcome to Paris Bridal</h1>
     <p class="lead mb-5">Create and experience the most beautiful memories</p>
 
@@ -18,6 +21,22 @@
         </div>
     </div>
 
+    <!-- Search Section -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8">
+            <form action="{{ url_for('main.search') }}" method="GET" class="search-form">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control form-control-lg" 
+                           placeholder="Search by couple's names or email" required>
+                    <input type="hidden" name="celebration_type" id="celebration_type_input">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-search me-2"></i>Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Image Gallery Section - Responsive Grid -->
     <div class="row g-4 mb-5">
         <div class="col-12 col-md-4">
@@ -31,7 +50,7 @@
                  class="img-fluid rounded shadow">
         </div>
         <div class="col-12 col-md-4">
-            <img src="https://images.unsplash.com/photo-1519741497674-611481863552" 
+            <img src="/static/assets/red dress display.jpg" 
                  alt="Special Moments" 
                  class="img-fluid rounded shadow">
         </div>
@@ -133,7 +152,6 @@
     {% endif %}
 </div>
 
-<!-- Add this to your template for celebration type selection -->
 <script>
     function selectCelebrationType(type) {
         // Remove active class from all buttons
@@ -144,8 +162,9 @@
         // Add active class to selected button
         document.getElementById(`${type}-btn`).classList.add('active');
 
-        // Store the selection
+        // Store the selection and update search form
         localStorage.setItem('celebrationType', type);
+        document.getElementById('celebration_type_input').value = type;
     }
 
     // Restore previous selection on page load
@@ -153,6 +172,7 @@
         const savedType = localStorage.getItem('celebrationType');
         if (savedType) {
             document.getElementById(`${savedType}-btn`).classList.add('active');
+            document.getElementById('celebration_type_input').value = savedType;
         }
     });
 </script>

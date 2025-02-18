@@ -321,3 +321,51 @@ footer {
         padding: 0.75rem;
     }
 }
+
+/* Logo styling */
+.logo-container {
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.logo-img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 2rem;
+}
+
+/* Search form styling */
+.search-form {
+    margin: 2rem 0;
+}
+
+.search-form .input-group {
+    border-radius: 50px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.search-form .form-control {
+    border: none;
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+}
+
+.search-form .btn {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    border-radius: 0;
+}
+
+/* Mobile responsiveness for search */
+@media (max-width: 768px) {
+    .search-form .input-group {
+        flex-direction: column;
+    }
+
+    .search-form .form-control,
+    .search-form .btn {
+        border-radius: 8px;
+        margin: 0.5rem 0;
+    }
+}

@@ -18,6 +18,8 @@ def index():
 @main.route('/search')
 def search():
     query = request.args.get('search', '').strip()
+    celebration_type = request.args.get('celebration_type', 'wedding')
+
     if not query:
         return redirect(url_for('main.index'))
 
@@ -34,7 +36,10 @@ def search():
         if user.registry and user.registry.is_public:
             registries.append(user.registry)
 
-    return render_template('registry/search_results.html', registries=registries, query=query)
+    return render_template('registry/search_results.html', 
+                         registries=registries, 
+                         query=query, 
+                         celebration_type=celebration_type)
 
 # Auth routes
 @auth.route('/register', methods=['GET', 'POST'])
