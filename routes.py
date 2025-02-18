@@ -100,10 +100,15 @@ def logout():
 def wedding_details(event_id):
     logger.debug(f"Accessing wedding details for event_id: {event_id}")
     logger.debug(f"Current user weddings: {[w.id for w in current_user.weddings]}")
+    logger.debug(f"Current user: {current_user.id}")
+
     wedding = Wedding.query.filter_by(id=event_id, user_id=current_user.id).first()
     if not wedding:
+        logger.error(f"Wedding not found for event_id: {event_id}, user_id: {current_user.id}")
         flash('Wedding not found.', 'error')
         return redirect(url_for('main.profile'))
+
+    logger.debug(f"Found wedding: {wedding.id}")
     return render_template('guest/wedding_details.html', wedding=wedding)
 
 @guest.route('/quinceanera-details/<int:event_id>')
@@ -111,10 +116,15 @@ def wedding_details(event_id):
 def quinceanera_details(event_id):
     logger.debug(f"Accessing quinceanera details for event_id: {event_id}")
     logger.debug(f"Current user quinceaneras: {[q.id for q in current_user.quinceaneras]}")
+    logger.debug(f"Current user: {current_user.id}")
+
     quinceanera = Quinceanera.query.filter_by(id=event_id, user_id=current_user.id).first()
     if not quinceanera:
+        logger.error(f"Quinceanera not found for event_id: {event_id}, user_id: {current_user.id}")
         flash('Quinceañera not found.', 'error')
         return redirect(url_for('main.profile'))
+
+    logger.debug(f"Found quinceanera: {quinceanera.id}")
     return render_template('guest/quinceanera_details.html', quinceanera=quinceanera)
 
 @guest.route('/list')

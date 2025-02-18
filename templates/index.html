@@ -145,18 +145,18 @@
         {% if current_user.is_authenticated %}
             if (type === 'wedding') {
                 {% if current_user.weddings and current_user.weddings|length > 0 %}
-                    {% with wedding = current_user.weddings[0] %}
-                        window.location.href = "{{ url_for('guest.wedding_details', event_id=wedding.id) }}";
-                    {% endwith %}
+                    console.log("User has wedding, redirecting to details");
+                    window.location.href = "{{ url_for('guest.wedding_details', event_id=current_user.weddings[0].id) }}";
                 {% else %}
+                    console.log("No wedding found, redirecting to create");
                     window.location.href = "{{ url_for('guest.create_wedding') }}";
                 {% endif %}
             } else if (type === 'quinceanera') {
                 {% if current_user.quinceaneras and current_user.quinceaneras|length > 0 %}
-                    {% with quinceanera = current_user.quinceaneras[0] %}
-                        window.location.href = "{{ url_for('guest.quinceanera_details', event_id=quinceanera.id) }}";
-                    {% endwith %}
+                    console.log("User has quinceanera, redirecting to details");
+                    window.location.href = "{{ url_for('guest.quinceanera_details', event_id=current_user.quinceaneras[0].id) }}";
                 {% else %}
+                    console.log("No quinceanera found, redirecting to create");
                     window.location.href = "{{ url_for('guest.create_quinceanera') }}";
                 {% endif %}
             }
@@ -178,5 +178,6 @@
             btn.classList.remove('active');
         });
     });
+
 </script>
 {% endblock %}
