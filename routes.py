@@ -271,6 +271,7 @@ def wedding_party():
 def add_party_member():
     form = WeddingPartyMemberForm()
     if form.validate_on_submit():
+        # Create wedding party member
         member = WeddingPartyMember(
             user_id=current_user.id,
             name=form.name.data,
@@ -280,9 +281,37 @@ def add_party_member():
             phone=form.phone.data,
             notes=form.notes.data
         )
+
+        # Check if person is already in guest list
+        existing_guest = Guest.query.filter_by(
+            user_id=current_user.id,
+            email=form.email.data,
+            name=form.name.data
+        ).first()
+
+        if not existing_guest:
+            # Add to guest list automatically
+            guest = Guest(
+                user_id=current_user.id,
+                name=form.name.data,
+                email=form.email.data,
+                phone=form.phone.data,
+                rsvp_status='attending',  # Wedding party members are automatically attending
+                number_of_guests=1,
+                notes=f"Wedding Party Member - {form.role_type.data.title()}"
+                + (f" ({form.role_title.data})" if form.role_title.data else "")
+            )
+            db.session.add(guest)
+
         db.session.add(member)
-        db.session.commit()
-        flash('Wedding party member added successfully!', 'success')
+        try:
+            db.session.commit()
+            flash('Wedding party member added successfully and automatically added to guest list!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred. Please try again.', 'error')
+            return render_template('guest/add_party_member.html', form=form)
+
         return redirect(url_for('guest.wedding_party'))
     return render_template('guest/add_party_member.html', form=form)
 
