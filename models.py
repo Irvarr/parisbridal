@@ -35,12 +35,18 @@ class RegistryItem(db.Model):
     registry_id = db.Column(db.Integer, db.ForeignKey('registry.id'), nullable=False)
     name = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text)
+    item_type = db.Column(db.String(20), default='physical')  # physical, cash, experience
     price = db.Column(db.Float)
-    amazon_url = db.Column(db.String(1000))  # Increased length for Amazon URLs
+    target_amount = db.Column(db.Float)  # For cash funds
+    current_amount = db.Column(db.Float, default=0)  # For tracking cash contributions
+    amazon_url = db.Column(db.String(1000))
     is_purchased = db.Column(db.Boolean, default=False)
     purchased_by = db.Column(db.String(100))
     ship_to_couple = db.Column(db.Boolean, default=True)
     bring_to_wedding = db.Column(db.Boolean, default=False)
     shipping_address = db.Column(db.Text)
     purchase_date = db.Column(db.DateTime)
+    priority_level = db.Column(db.String(20), default='normal')  # must-have, normal, nice-to-have
+    experience_date = db.Column(db.Date)  # For experience gifts
+    experience_location = db.Column(db.String(200))  # For experience gifts
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
