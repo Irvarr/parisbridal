@@ -14,39 +14,50 @@
             <a class="navbar-brand" href="{{ url_for('main.index') }}">
                 <i class="fas fa-ring me-2"></i>Paris Bridal
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    {% if current_user.is_authenticated %}
-                        {% if current_user.registry %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('registry.edit', registry_id=current_user.registry.id) }}">My Registry</a>
+            <div class="d-flex">
+                {% if current_user.is_authenticated %}
+                    <div class="dropdown">
+                        <button class="btn btn-link nav-link dropdown-toggle" type="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle fa-lg"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuDropdown">
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('guest.wedding_details') }}">
+                                    <i class="fas fa-heart me-2"></i>My Wedding
+                                </a>
                             </li>
-                        {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('registry.create') }}">Create Registry</a>
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('guest.list_guests') }}">
+                                    <i class="fas fa-users me-2"></i>Guest List
+                                </a>
                             </li>
-                        {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('guest.wedding_details') }}">Wedding Details</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('guest.list_guests') }}">Guest List</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
-                        </li>
-                    {% endif %}
-                </ul>
+                            {% if current_user.registry %}
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('registry.edit', registry_id=current_user.registry.id) }}">
+                                        <i class="fas fa-gift me-2"></i>Registry
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('registry.create') }}">
+                                        <i class="fas fa-gift me-2"></i>Create Registry
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <div class="d-flex">
+                        <a href="{{ url_for('auth.login') }}" class="nav-link me-3">Login</a>
+                        <a href="{{ url_for('auth.register') }}" class="nav-link">Register</a>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </nav>
