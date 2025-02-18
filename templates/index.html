@@ -144,17 +144,9 @@
     function handleCelebrationClick(type) {
         {% if current_user.is_authenticated %}
             if (type === 'wedding') {
-                {% if current_user.weddings and current_user.weddings|length > 0 %}
-                    window.location.href = "{{ url_for('guest.wedding_details', event_id=current_user.weddings[0].id) }}";
-                {% else %}
-                    window.location.href = "{{ url_for('guest.create_wedding') }}";
-                {% endif %}
+                window.location.href = "{{ url_for('guest.wedding_details', event_id=current_user.weddings[0].id) if current_user.weddings and current_user.weddings|length > 0 else url_for('guest.create_wedding') }}";
             } else if (type === 'quinceanera') {
-                {% if current_user.quinceaneras and current_user.quinceaneras|length > 0 %}
-                    window.location.href = "{{ url_for('guest.quinceanera_details', event_id=current_user.quinceaneras[0].id) }}";
-                {% else %}
-                    window.location.href = "{{ url_for('guest.create_quinceanera') }}";
-                {% endif %}
+                window.location.href = "{{ url_for('guest.quinceanera_details', event_id=current_user.quinceaneras[0].id) if current_user.quinceaneras and current_user.quinceaneras|length > 0 else url_for('guest.create_quinceanera') }}";
             }
         {% else %}
             // Not authenticated, redirect to login with next parameter
