@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-body">
                     <h2 class="card-title text-center mb-4">Our Wedding Details</h2>
-                    
+
                     <div class="text-center mb-4">
                         <h3 class="mb-0">{{ current_user.partner1_name }} & {{ current_user.partner2_name }}</h3>
                         <p class="lead">are getting married!</p>
@@ -48,9 +48,14 @@
                             <i class="fas fa-users me-2"></i>View Guest List
                         </a>
                         {% if current_user.registry %}
-                            <a href="{{ url_for('registry.view', registry_id=current_user.registry.id) }}" 
+                            <a href="{{ url_for('registry.edit', registry_id=current_user.registry.id) }}" 
                                class="btn btn-outline-primary ms-2">
-                                <i class="fas fa-gift me-2"></i>View Registry
+                                <i class="fas fa-gift me-2"></i>Our Registry
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('registry.create') }}" 
+                               class="btn btn-outline-primary ms-2">
+                                <i class="fas fa-gift me-2"></i>Create Registry
                             </a>
                         {% endif %}
                     </div>
