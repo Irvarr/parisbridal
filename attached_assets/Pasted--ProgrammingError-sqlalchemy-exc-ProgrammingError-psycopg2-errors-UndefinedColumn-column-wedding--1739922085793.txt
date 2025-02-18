@@ -1,0 +1,96 @@
+
+ProgrammingError
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column wedding_party_member.event_id does not exist
+LINE 1: ...y_member.user_id AS wedding_party_member_user_id, wedding_pa...
+                                                             ^
+
+[SQL: SELECT wedding_party_member.id AS wedding_party_member_id, wedding_party_member.user_id AS wedding_party_member_user_id, wedding_party_member.event_id AS wedding_party_member_event_id, wedding_party_member.name AS wedding_party_member_name, wedding_party_member.role_type AS wedding_party_member_role_type, wedding_party_member.role_title AS wedding_party_member_role_title, wedding_party_member.phone AS wedding_party_member_phone, wedding_party_member.email AS wedding_party_member_email, wedding_party_member.notes AS wedding_party_member_notes, wedding_party_member.created_at AS wedding_party_member_created_at 
+FROM wedding_party_member 
+WHERE wedding_party_member.event_id = %(event_id_1)s AND wedding_party_member.user_id = %(user_id_1)s ORDER BY wedding_party_member.role_type, wedding_party_member.created_at]
+[parameters: {'event_id_1': 1, 'user_id_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+
+Traceback (most recent call last)
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1964, in _exec_single_context
+self.dialect.do_execute(
+^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 942, in do_execute
+cursor.execute(statement, parameters)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The above exception was the direct cause of the following exception:
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 1536, in __call__
+return self.wsgi_app(environ, start_response)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 1514, in wsgi_app
+response = self.handle_exception(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 1511, in wsgi_app
+response = self.full_dispatch_request()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 919, in full_dispatch_request
+rv = self.handle_user_exception(e)
+     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 917, in full_dispatch_request
+rv = self.dispatch_request()
+     ^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 902, in dispatch_request
+return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask_login/utils.py", line 290, in decorated_view
+return current_app.ensure_sync(func)(*args, **kwargs)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/routes.py", line 186, in wedding_party
+).order_by(WeddingPartyMember.role_type, WeddingPartyMember.created_at).all()
+                                                                        ^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/orm/query.py", line 2699, in all
+return self._iter().all()  # type: ignore
+       ^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/orm/query.py", line 2853, in _iter
+result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                              
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 2365, in execute
+return self._execute_internal(
+       
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 2251, in _execute_internal
+result: Result[Any] = compile_state_cls.orm_execute_statement(
+                      
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/orm/context.py", line 305, in orm_execute_statement
+result = conn.execute(
+         
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1416, in execute
+return meth(
+       
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/sql/elements.py", line 515, in _execute_on_connection
+return connection._execute_clauseelement(
+       
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1638, in _execute_clauseelement
+ret = self._execute_context(
+      
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1843, in _execute_context
+return self._exec_single_context(
+       
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1983, in _exec_single_context
+self._handle_dbapi_exception(
+^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 2352, in _handle_dbapi_exception
+raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1964, in _exec_single_context
+self.dialect.do_execute(
+^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 942, in do_execute
+cursor.execute(statement, parameters)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column wedding_party_member.event_id does not exist
+LINE 1: ...y_member.user_id AS wedding_party_member_user_id, wedding_pa...
+^
+
+[SQL: SELECT wedding_party_member.id AS wedding_party_member_id, wedding_party_member.user_id AS wedding_party_member_user_id, wedding_party_member.event_id AS wedding_party_member_event_id, wedding_party_member.name AS wedding_party_member_name, wedding_party_member.role_type AS wedding_party_member_role_type, wedding_party_member.role_title AS wedding_party_member_role_title, wedding_party_member.phone AS wedding_party_member_phone, wedding_party_member.email AS wedding_party_member_email, wedding_party_member.notes AS wedding_party_member_notes, wedding_party_member.created_at AS wedding_party_member_created_at
+FROM wedding_party_member
+WHERE wedding_party_member.event_id = %(event_id_1)s AND wedding_party_member.user_id = %(user_id_1)s ORDER BY wedding_party_member.role_type, wedding_party_member.created_at]
+[parameters: {'event_id_1': 1, 'user_id_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+The debugger caught an exception in your WSGI application. You can now look at the traceback which led to the error.
+To switch between the interactive traceback and the plaintext one, you can click on the "Traceback" headline. From the text traceback you can also create a paste of it.
+
+Brought to you by DON'T PANIC, your friendly Werkzeug powered traceback interpreter.
