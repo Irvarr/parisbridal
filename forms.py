@@ -1,21 +1,28 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, DateField, TextAreaField, BooleanField, FloatField, SearchField, SelectField, RadioField
-from wtforms.validators import DataRequired, Email, Length, URL, Optional
+from wtforms import (
+    StringField, PasswordField, DateField, TextAreaField, 
+    BooleanField, SelectField, FloatField, SearchField
+)
+from wtforms.validators import DataRequired, Email, Length, Optional, URL
 
 class RegisterForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
-    celebration_type = RadioField('Celebration Type', 
-        choices=[('wedding', 'Wedding'), ('quinceanera', 'Quinceañera')],
-        validators=[DataRequired()]
+
+    # Celebration Type Checkboxes
+    is_wedding = BooleanField('I\'m getting married')
+    is_quinceanera = BooleanField('I have a Quinceañera')
+    is_party = BooleanField('I just like to party')
+
+    # Optional Celebration Details
+    celebration_date = SelectField('Celebration Date',
+        choices=[
+            ('tbd', 'Date Not Set (TBD)'),
+            ('custom', 'I have a date in mind')
+        ],
+        default='tbd'
     )
-    # Wedding-specific fields
-    partner1_name = StringField('Partner 1 Name', validators=[Optional(), Length(min=2, max=100)])
-    partner2_name = StringField('Partner 2 Name', validators=[Optional(), Length(min=2, max=100)])
-    # Quinceañera-specific fields
-    celebrant_name = StringField('Celebrant Name', validators=[Optional(), Length(min=2, max=100)])
-    # Common Fields
-    celebration_date = DateField('Celebration Date', validators=[DataRequired()])
+    custom_date = DateField('Custom Date', validators=[Optional()])
     celebration_location = StringField('Location (Optional)', validators=[Optional(), Length(max=200)])
 
 class CreateWeddingForm(FlaskForm):

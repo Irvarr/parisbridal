@@ -5,49 +5,9 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-body">
-                <h2 class="card-title text-center mb-4">Create Your Celebration Account</h2>
+                <h2 class="card-title text-center mb-4">Create Your Account</h2>
                 <form method="POST">
                     {{ form.hidden_tag() }}
-                    <div class="mb-3">
-                        {{ form.celebration_type.label(class="form-label") }}
-                        <div class="btn-group w-100" role="group">
-                            {% for subfield in form.celebration_type %}
-                            <input type="radio" class="btn-check" name="{{ form.celebration_type.name }}"
-                                   id="{{ subfield.id }}" value="{{ subfield.data }}" autocomplete="off"
-                                   {% if loop.first %}checked{% endif %}>
-                            <label class="btn btn-outline-primary celebration-btn" for="{{ subfield.id }}">
-                                {{ subfield.label }}
-                            </label>
-                            {% endfor %}
-                        </div>
-                    </div>
-
-                    <div id="wedding-fields">
-                        <div class="mb-3">
-                            {{ form.partner1_name.label(class="form-label") }}
-                            {{ form.partner1_name(class="form-control") }}
-                            {% for error in form.partner1_name.errors %}
-                                <span class="text-danger">{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                        <div class="mb-3">
-                            {{ form.partner2_name.label(class="form-label") }}
-                            {{ form.partner2_name(class="form-control") }}
-                            {% for error in form.partner2_name.errors %}
-                                <span class="text-danger">{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    </div>
-
-                    <div id="quinceanera-fields" style="display: none;">
-                        <div class="mb-3">
-                            {{ form.celebrant_name.label(class="form-label") }}
-                            {{ form.celebrant_name(class="form-control") }}
-                            {% for error in form.celebrant_name.errors %}
-                                <span class="text-danger">{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    </div>
 
                     <div class="mb-3">
                         {{ form.email.label(class="form-label") }}
@@ -56,6 +16,7 @@
                             <span class="text-danger">{{ error }}</span>
                         {% endfor %}
                     </div>
+
                     <div class="mb-3">
                         {{ form.password.label(class="form-label") }}
                         {{ form.password(class="form-control") }}
@@ -63,13 +24,36 @@
                             <span class="text-danger">{{ error }}</span>
                         {% endfor %}
                     </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">What brings you here?</label>
+                        <div class="d-grid gap-2">
+                            <div class="form-check">
+                                {{ form.is_wedding(class="form-check-input") }}
+                                {{ form.is_wedding.label(class="form-check-label") }}
+                            </div>
+                            <div class="form-check">
+                                {{ form.is_quinceanera(class="form-check-input") }}
+                                {{ form.is_quinceanera.label(class="form-check-label") }}
+                            </div>
+                            <div class="form-check">
+                                {{ form.is_party(class="form-check-input") }}
+                                {{ form.is_party.label(class="form-check-label") }}
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="mb-3">
                         {{ form.celebration_date.label(class="form-label") }}
-                        {{ form.celebration_date(class="form-control", type="date") }}
+                        {{ form.celebration_date(class="form-select", onchange="toggleCustomDate()") }}
+                        <div id="custom-date-field" style="display: none;" class="mt-2">
+                            {{ form.custom_date(class="form-control", type="date") }}
+                        </div>
                         {% for error in form.celebration_date.errors %}
                             <span class="text-danger">{{ error }}</span>
                         {% endfor %}
                     </div>
+
                     <div class="mb-3">
                         {{ form.celebration_location.label(class="form-label") }}
                         {{ form.celebration_location(class="form-control") }}
@@ -77,6 +61,7 @@
                             <span class="text-danger">{{ error }}</span>
                         {% endfor %}
                     </div>
+
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary">Create Account</button>
                     </div>
@@ -92,28 +77,14 @@
 
 {% block scripts %}
 <script>
+function toggleCustomDate() {
+    const dateSelect = document.querySelector('select[name="celebration_date"]');
+    const customDateField = document.getElementById('custom-date-field');
+    customDateField.style.display = dateSelect.value === 'custom' ? 'block' : 'none';
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    const weddingFields = document.getElementById('wedding-fields');
-    const quinceaneeraFields = document.getElementById('quinceanera-fields');
-    const celebrationType = document.getElementsByName('celebration_type');
-
-    function updateFields() {
-        const selectedType = document.querySelector('input[name="celebration_type"]:checked').value;
-        if (selectedType === 'wedding') {
-            weddingFields.style.display = 'block';
-            quinceaneeraFields.style.display = 'none';
-        } else {
-            weddingFields.style.display = 'none';
-            quinceaneeraFields.style.display = 'block';
-        }
-    }
-
-    celebrationType.forEach(radio => {
-        radio.addEventListener('change', updateFields);
-    });
-
-    // Initialize fields on page load
-    updateFields();
+    toggleCustomDate();
 });
 </script>
 {% endblock %}
