@@ -108,6 +108,7 @@ class Guest(db.Model):
 class WeddingPartyMember(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    event_id = db.Column(db.Integer, nullable=False)  # ID of the associated event
     name = db.Column(db.String(100), nullable=False)
     role_type = db.Column(db.String(20), nullable=False)  # 'bridesmaid', 'groomsman', 'sponsor'
     role_title = db.Column(db.String(50))  # e.g., 'Maid of Honor', 'Best Man', 'Primary Sponsor'

@@ -45,29 +45,29 @@
                         </div>
 
                         <div class="row g-4 mt-4 text-center">
-                            <div class="col-md-4">
-                                <a href="{{ url_for('guest.list_guests') }}" class="btn btn-primary d-block">
+                            <div class="col-md-4 d-grid">
+                                <a href="{{ url_for('guest.list_guests') }}" class="btn btn-primary">
                                     <i class="fas fa-users fa-2x mb-2"></i><br>
                                     Guest List
                                 </a>
                             </div>
-                            <div class="col-md-4">
-                                <a href="{{ url_for('guest.wedding_party', event_id=wedding.id) }}" class="btn btn-primary d-block">
+                            <div class="col-md-4 d-grid">
+                                <a href="{{ url_for('guest.wedding_party', event_id=wedding.id) }}" class="btn btn-primary">
                                     <i class="fas fa-glass-cheers fa-2x mb-2"></i><br>
                                     Wedding Party
                                 </a>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 d-grid">
                                 {% set registry = Registry.query.filter_by(event_id=wedding.id, event_type='wedding').first() %}
                                 {% if registry %}
                                     <a href="{{ url_for('registry.edit', registry_id=registry.id) }}" 
-                                       class="btn btn-primary d-block">
+                                       class="btn btn-primary">
                                         <i class="fas fa-gift fa-2x mb-2"></i><br>
                                         Our Registry
                                     </a>
                                 {% else %}
                                     <a href="{{ url_for('registry.create', event_type='wedding', event_id=wedding.id) }}" 
-                                       class="btn btn-primary d-block">
+                                       class="btn btn-primary">
                                         <i class="fas fa-gift fa-2x mb-2"></i><br>
                                         Create Registry
                                     </a>
