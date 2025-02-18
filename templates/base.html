@@ -1,63 +1,120 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paris Bridal</title>
-    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #F9EBEA;
+            --accent-color: #F8BBD0;
+            --accent-dark: #F48FB1;
+            --text-color: #424242;
+        }
+
+        body {
+            background-color: var(--primary-color);
+            color: var(--text-color);
+        }
+
+        .navbar {
+            background-color: white !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            color: var(--text-color) !important;
+            text-decoration: none;
+        }
+
+        .nav-link {
+            color: var(--text-color) !important;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color) !important;
+            border-color: var(--accent-color) !important;
+            color: var(--text-color) !important;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-dark) !important;
+            border-color: var(--accent-dark) !important;
+        }
+
         .gold-icon {
-            color: #FFD700;
+            color: var(--accent-dark);
+        }
+
+        .dropdown-menu {
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: none;
+            background-color: white;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--primary-color);
+        }
+
+        .card {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <div class="dropdown">
-                <a class="navbar-brand dropdown-toggle" href="#" role="button" id="navbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-crown me-2"></i>Paris Bridal
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li>
-                        <a class="dropdown-item" href="{{ url_for('services.bridal_gowns') }}">
-                            <i class="fas fa-dress me-2"></i>Bridal Gowns
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="{{ url_for('services.quinceanera_dresses') }}">
-                            <i class="fas fa-crown me-2"></i>Quinceañera Dresses
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="{{ url_for('services.tuxedo_rentals') }}">
-                            <i class="fas fa-user-tie me-2"></i>Tuxedo Rentals
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="{{ url_for('services.accessories') }}">
-                            <i class="fas fa-gem me-2"></i>Accessories
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="{{ url_for('services.decorations') }}">
-                            <i class="fas fa-star me-2"></i>Decorations
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="{{ url_for('services.planning_services') }}">
-                            <i class="fas fa-calendar-check me-2"></i>Planning Services
-                        </a>
-                    </li>
-                </ul>
+            <div class="d-flex align-items-center">
+                <div class="dropdown me-2">
+                    <button class="btn btn-link p-0" type="button" id="navbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-crown fa-lg gold-icon"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('services.bridal_gowns') }}">
+                                <i class="fas fa-dress me-2"></i>Bridal Gowns
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('services.quinceanera_dresses') }}">
+                                <i class="fas fa-crown me-2"></i>Quinceañera Dresses
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('services.tuxedo_rentals') }}">
+                                <i class="fas fa-user-tie me-2"></i>Tuxedo Rentals
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('services.accessories') }}">
+                                <i class="fas fa-gem me-2"></i>Accessories
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('services.decorations') }}">
+                                <i class="fas fa-star me-2"></i>Decorations
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('services.planning_services') }}">
+                                <i class="fas fa-calendar-check me-2"></i>Planning Services
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <a class="navbar-brand" href="{{ url_for('main.index') }}">Paris Bridal</a>
             </div>
             <div class="d-flex">
                 {% if current_user.is_authenticated %}
                     <div class="dropdown">
                         <button class="btn btn-link nav-link dropdown-toggle" type="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-crown fa-lg gold-icon"></i>
+                            <i class="fas fa-user fa-lg gold-icon"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuDropdown">
                             <li>
@@ -115,9 +172,9 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="bg-dark py-4 mt-5">
+    <footer class="py-4 mt-5" style="background-color: white;">
         <div class="container text-center">
-            <p class="mb-0 text-muted">&copy; 2024 Paris Bridal. All rights reserved.</p>
+            <p class="mb-0" style="color: var(--text-color);">&copy; 2024 Paris Bridal. All rights reserved.</p>
         </div>
     </footer>
 
