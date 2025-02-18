@@ -16,9 +16,43 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('main.index') }}">
-                <i class="fas fa-crown me-2"></i>Paris Bridal
-            </a>
+            <div class="dropdown">
+                <a class="navbar-brand dropdown-toggle" href="#" role="button" id="navbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-crown me-2"></i>Paris Bridal
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li>
+                        <a class="dropdown-item" href="{{ url_for('services.bridal_gowns') }}">
+                            <i class="fas fa-dress me-2"></i>Bridal Gowns
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{{ url_for('services.quinceanera_dresses') }}">
+                            <i class="fas fa-crown me-2"></i>Quinceañera Dresses
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{{ url_for('services.tuxedo_rentals') }}">
+                            <i class="fas fa-user-tie me-2"></i>Tuxedo Rentals
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{{ url_for('services.accessories') }}">
+                            <i class="fas fa-gem me-2"></i>Accessories
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{{ url_for('services.decorations') }}">
+                            <i class="fas fa-star me-2"></i>Decorations
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{{ url_for('services.planning_services') }}">
+                            <i class="fas fa-calendar-check me-2"></i>Planning Services
+                        </a>
+                    </li>
+                </ul>
+            </div>
             <div class="d-flex">
                 {% if current_user.is_authenticated %}
                     <div class="dropdown">

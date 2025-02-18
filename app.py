@@ -33,8 +33,9 @@ with app.app_context():
     db.create_all()
 
 # Register blueprints
-from routes import main, auth, registry, guest
+from routes import main, auth, registry, guest, services
 app.register_blueprint(main)
 app.register_blueprint(auth)
 app.register_blueprint(registry)
 app.register_blueprint(guest)
+app.register_blueprint(services)
