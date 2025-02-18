@@ -18,19 +18,14 @@
                     <i class="fas fa-ring me-2"></i>Wedding
                 </button>
             </div>
-        </div>
-    </div>
-
-    <!-- Search Section -->
-    <div class="row justify-content-center mb-5">
-        <div class="col-md-8">
-            <form action="{{ url_for('main.search') }}" method="GET" class="search-form">
+            <!-- Search Section - Aligned with buttons -->
+            <form action="{{ url_for('main.search') }}" method="GET" class="search-form mt-3">
                 <div class="input-group">
-                    <input type="text" name="search" class="form-control form-control-lg" 
-                           placeholder="Search by couple's names or email" required>
+                    <input type="text" name="search" class="form-control" 
+                           placeholder="Search by email or unique code" required>
                     <input type="hidden" name="celebration_type" id="celebration_type_input">
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        <i class="fas fa-search me-2"></i>Search
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i>
                     </button>
                 </div>
             </form>
