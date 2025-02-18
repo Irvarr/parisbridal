@@ -9,12 +9,18 @@ class RegisterForm(FlaskForm):
         choices=[('wedding', 'Wedding'), ('quinceanera', 'Quinceañera')],
         validators=[DataRequired()]
     )
-    # Wedding Fields
-    partner1_name = StringField('Partner 1 Name', validators=[Optional(), Length(min=2, max=100)])
-    partner2_name = StringField('Partner 2 Name', validators=[Optional(), Length(min=2, max=100)])
-    # Quinceañera Fields
-    celebrant_name = StringField('Celebrant Name', validators=[Optional(), Length(min=2, max=100)])
     # Common Fields
+    celebration_date = DateField('Celebration Date', validators=[DataRequired()])
+    celebration_location = StringField('Location (Optional)', validators=[Optional(), Length(max=200)])
+
+class CreateWeddingForm(FlaskForm):
+    partner1_name = StringField('Partner 1 Name', validators=[DataRequired(), Length(min=2, max=100)])
+    partner2_name = StringField('Partner 2 Name', validators=[DataRequired(), Length(min=2, max=100)])
+    celebration_date = DateField('Celebration Date', validators=[DataRequired()])
+    celebration_location = StringField('Location (Optional)', validators=[Optional(), Length(max=200)])
+
+class CreateQuinceaneraForm(FlaskForm):
+    celebrant_name = StringField('Celebrant Name', validators=[DataRequired(), Length(min=2, max=100)])
     celebration_date = DateField('Celebration Date', validators=[DataRequired()])
     celebration_location = StringField('Location (Optional)', validators=[Optional(), Length(max=200)])
 

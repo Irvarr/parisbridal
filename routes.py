@@ -1,10 +1,18 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from datetime import datetime
+import logging
 from app import db
 from models import User, Registry, RegistryItem, Guest, WeddingPartyMember, Wedding, Quinceanera
-from forms import RegisterForm, LoginForm, RegistryForm, RegistryItemForm, RegistrySearchForm, PurchaseForm, GuestForm, WeddingPartyMemberForm
+from forms import (RegisterForm, LoginForm, RegistryForm, RegistryItemForm, 
+                  RegistrySearchForm, PurchaseForm, GuestForm, WeddingPartyMemberForm,
+                  CreateWeddingForm, CreateQuinceaneraForm)
 
+# Set up logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
+# Keep existing blueprint definitions...
 main = Blueprint('main', __name__)
 auth = Blueprint('auth', __name__, url_prefix='/auth')
 registry = Blueprint('registry', __name__, url_prefix='/registry')
@@ -276,24 +284,32 @@ def create_wedding():
         flash('You already have a wedding created.', 'warning')
         return redirect(url_for('guest.wedding_details'))
 
-    form = RegisterForm()
-    if form.validate_on_submit():
-        try:
-            wedding = Wedding(
-                user_id=current_user.id,
-                partner1_name=form.partner1_name.data,
-                partner2_name=form.partner2_name.data,
-                celebration_date=form.celebration_date.data,
-                celebration_location=form.celebration_location.data
-            )
-            db.session.add(wedding)
-            db.session.commit()
-            flash('Wedding details created successfully!', 'success')
-            return redirect(url_for('guest.wedding_details'))
-        except Exception as e:
-            db.session.rollback()
-            flash(f'An error occurred. Please try again. Error: {str(e)}', 'error')
-            return render_template('guest/create_wedding.html', form=form)
+    form = CreateWeddingForm()
+    if request.method == 'POST':
+        logger.debug(f"Form data: {request.form}")
+
+        if form.validate_on_submit():
+            try:
+                wedding = Wedding(
+                    user_id=current_user.id,
+                    partner1_name=form.partner1_name.data,
+                    partner2_name=form.partner2_name.data,
+                    celebration_date=form.celebration_date.data,
+                    celebration_location=form.celebration_location.data
+                )
+                db.session.add(wedding)
+                db.session.commit()
+                flash('Wedding details created successfully!', 'success')
+                return redirect(url_for('guest.wedding_details'))
+            except Exception as e:
+                logger.error(f"Error creating wedding: {str(e)}")
+                db.session.rollback()
+                flash(f'An error occurred while creating your wedding details. Please try again.', 'error')
+        else:
+            logger.debug(f"Form validation errors: {form.errors}")
+            for field, errors in form.errors.items():
+                for error in errors:
+                    flash(f'{field}: {error}', 'error')
 
     return render_template('guest/create_wedding.html', form=form)
 
@@ -304,23 +320,31 @@ def create_quinceanera():
         flash('You already have a quinceañera created.', 'warning')
         return redirect(url_for('guest.quinceanera_details'))
 
-    form = RegisterForm()
-    if form.validate_on_submit():
-        try:
-            quinceanera = Quinceanera(
-                user_id=current_user.id,
-                celebrant_name=form.celebrant_name.data,
-                celebration_date=form.celebration_date.data,
-                celebration_location=form.celebration_location.data
-            )
-            db.session.add(quinceanera)
-            db.session.commit()
-            flash('Quinceañera details created successfully!', 'success')
-            return redirect(url_for('guest.quinceanera_details'))
-        except Exception as e:
-            db.session.rollback()
-            flash(f'An error occurred. Please try again. Error: {str(e)}', 'error')
-            return render_template('guest/create_quinceanera.html', form=form)
+    form = CreateQuinceaneraForm()
+    if request.method == 'POST':
+        logger.debug(f"Form data: {request.form}")
+
+        if form.validate_on_submit():
+            try:
+                quinceanera = Quinceanera(
+                    user_id=current_user.id,
+                    celebrant_name=form.celebrant_name.data,
+                    celebration_date=form.celebration_date.data,
+                    celebration_location=form.celebration_location.data
+                )
+                db.session.add(quinceanera)
+                db.session.commit()
+                flash('Quinceañera details created successfully!', 'success')
+                return redirect(url_for('guest.quinceanera_details'))
+            except Exception as e:
+                logger.error(f"Error creating quinceañera: {str(e)}")
+                db.session.rollback()
+                flash(f'An error occurred while creating your quinceañera details. Please try again.', 'error')
+        else:
+            logger.debug(f"Form validation errors: {form.errors}")
+            for field, errors in form.errors.items():
+                for error in errors:
+                    flash(f'{field}: {error}', 'error')
 
     return render_template('guest/create_quinceanera.html', form=form)
 
