@@ -4,6 +4,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import inspect
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -29,8 +30,20 @@ login_manager.login_view = 'auth.login'
 
 # Create tables
 with app.app_context():
-    import models
+    # Import all models to ensure they're registered with SQLAlchemy
+    from models import (
+        User, Registry, RegistryItem, Guest, 
+        WeddingPartyMember, Wedding, Quinceanera,
+        GiftSuggestion
+    )
+
+    # Create all tables
     db.create_all()
+
+    # Log table creation using SQLAlchemy inspector
+    inspector = inspect(db.engine)
+    tables = inspector.get_table_names()
+    logging.info(f"Created tables: {tables}")
 
 # Register blueprints
 from routes import main, auth, registry, guest, services
