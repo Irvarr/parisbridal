@@ -3,7 +3,7 @@
 {% block content %}
 <div class="text-center py-5">
     <div class="logo-container mb-4">
-        <img src="/static/assets/brids-01.png" alt="Paris Bridal Logo" class="logo-img">
+        <img src="{{ url_for('static', filename='assets/brids-01.png') }}" alt="Paris Bridal Logo" class="logo-img">
     </div>
     <h1 class="display-4 mb-4">Welcome to Paris Bridal</h1>
     <p class="lead mb-5">Create and experience the most beautiful memories</p>
@@ -74,7 +74,7 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-6">
-                    <img src="/static/assets/red dress display.jpg" 
+                    <img src="{{ url_for('static', filename='assets/red dress display.jpg') }}" 
                          alt="Quinceañera Dress Display" 
                          class="img-fluid rounded shadow-lg">
                 </div>
@@ -116,15 +116,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Store Image -->
-            <div class="row mt-5">
-                <div class="col-12">
-                    <img src="https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5"
-                         alt="Our Store"
-                         class="img-fluid rounded shadow-lg w-100 mb-4">
                 </div>
             </div>
 
