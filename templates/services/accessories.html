@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center mb-5">Accessories</h1>
+    
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <img src="https://images.unsplash.com/photo-1611652022419-a9419f47b526" 
+                 alt="Bridal Accessories Collection" 
+                 class="img-fluid rounded shadow-lg mb-4">
+        </div>
+        <div class="col-md-6">
+            <h2>Complete Your Look</h2>
+            <p class="lead">Discover our exquisite collection of bridal and quinceañera accessories to add the perfect finishing touches to your special day.</p>
+            
+            <div class="mt-4">
+                <h3>Our Collection Features:</h3>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-gem text-success me-2"></i>Designer Tiaras</li>
+                    <li><i class="fas fa-gem text-success me-2"></i>Fine Jewelry</li>
+                    <li><i class="fas fa-gem text-success me-2"></i>Hair Accessories</li>
+                    <li><i class="fas fa-gem text-success me-2"></i>Veils & Mantillas</li>
+                    <li><i class="fas fa-gem text-success me-2"></i>Fashion Accessories</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gallery Section -->
+    <div class="row g-4">
+        <div class="col-12">
+            <h3 class="text-center mb-4">Featured Accessories</h3>
+        </div>
+        <!-- Tiaras -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <img src="https://images.unsplash.com/photo-1596935884413-260a972dab44" 
+                     class="card-img-top" alt="Tiaras Collection">
+                <div class="card-body">
+                    <h5 class="card-title">Tiaras & Crowns</h5>
+                    <p class="card-text">Elegant tiaras and crowns for both brides and quinceañeras.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Jewelry -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338" 
+                     class="card-img-top" alt="Jewelry Collection">
+                <div class="card-body">
+                    <h5 class="card-title">Fine Jewelry</h5>
+                    <p class="card-text">Stunning necklaces, earrings, and bracelets.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Other Accessories -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <img src="https://images.unsplash.com/photo-1621184455862-c163dfb30e0f" 
+                     class="card-img-top" alt="Fashion Accessories">
+                <div class="card-body">
+                    <h5 class="card-title">Fashion Accessories</h5>
+                    <p class="card-text">Veils, belts, and other elegant accessories.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

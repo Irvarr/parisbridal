@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center mb-5">Planning Services</h1>
+    
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85" 
+                 alt="Event Planning" 
+                 class="img-fluid rounded shadow-lg mb-4">
+        </div>
+        <div class="col-md-6">
+            <h2>Comprehensive Planning Solutions</h2>
+            <p class="lead">Let us help you manage every detail of your special day with our professional planning services.</p>
+            
+            <div class="mt-4">
+                <h3>Our Planning Tools Include:</h3>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-clipboard-check text-success me-2"></i>Digital Gift Registry</li>
+                    <li><i class="fas fa-users text-success me-2"></i>Guest List Management</li>
+                    <li><i class="fas fa-chair text-success me-2"></i>Seating Arrangements</li>
+                    <li><i class="fas fa-utensils text-success me-2"></i>Meal Planning</li>
+                    <li><i class="fas fa-calendar-check text-success me-2"></i>Timeline Management</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Planning Features -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fas fa-gift me-2"></i>Registry Management</h4>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Create and manage your gift registry</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Track gifts and thank-you notes</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Multiple gift categories</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Share registry with guests</li>
+                    </ul>
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('registry.create') }}" class="btn btn-primary mt-3">Create Registry</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fas fa-users me-2"></i>Guest Management</h4>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Digital guest list management</li>
+                        <li><i class="fas fa-check text-success me-2"></i>RSVP tracking</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Meal preference collection</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Guest communications</li>
+                    </ul>
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('guest.list_guests') }}" class="btn btn-primary mt-3">Manage Guest List</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fas fa-chair me-2"></i>Seating Arrangements</h4>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Interactive seating planner</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Table assignments</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Family grouping options</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Print seating charts</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fas fa-utensils me-2"></i>Meal Management</h4>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Menu planning</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Dietary restriction tracking</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Meal choice collection</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Catering coordination</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
