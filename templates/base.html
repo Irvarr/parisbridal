@@ -18,20 +18,21 @@
         body {
             background-color: var(--primary-color);
             color: var(--text-color);
+            padding-top: 60px; /* Add padding to prevent content from hiding under sticky navbar */
         }
 
         .navbar {
-            background-color: white !important;
+            background-color: black !important;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .navbar-brand {
-            color: var(--text-color) !important;
+            color: white !important;
             text-decoration: none;
         }
 
         .nav-link {
-            color: var(--text-color) !important;
+            color: white !important;
         }
 
         .btn-primary {
@@ -46,7 +47,7 @@
         }
 
         .gold-icon {
-            color: var(--accent-dark);
+            color: #FFD700 !important;
         }
 
         .dropdown-menu {
@@ -54,6 +55,10 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             border: none;
             background-color: white;
+        }
+
+        .dropdown-item {
+            color: var(--text-color);
         }
 
         .dropdown-item:hover {
@@ -65,15 +70,24 @@
             border: none;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+
+        .nav-icon-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <div class="d-flex align-items-center">
                 <div class="dropdown me-2">
                     <button class="btn btn-link p-0" type="button" id="navbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-crown fa-lg gold-icon"></i>
+                        <span class="nav-icon-group">
+                            <i class="fas fa-crown fa-lg gold-icon"></i>
+                            <i class="fas fa-caret-down gold-icon"></i>
+                        </span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li>
@@ -114,7 +128,7 @@
                 {% if current_user.is_authenticated %}
                     <div class="dropdown">
                         <button class="btn btn-link nav-link dropdown-toggle" type="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user fa-lg gold-icon"></i>
+                            <i class="fas fa-crown fa-lg gold-icon"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuDropdown">
                             <li>
