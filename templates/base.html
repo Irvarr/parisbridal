@@ -133,7 +133,7 @@
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuDropdown">
                             <li>
                                 <a class="dropdown-item" href="{{ url_for('guest.wedding_details') }}">
-                                    <i class="fas fa-heart me-2"></i>My Wedding
+                                    <i class="fas fa-heart me-2"></i>My Profile
                                 </a>
                             </li>
                             <li>
@@ -144,13 +144,13 @@
                             {% if current_user.registry %}
                                 <li>
                                     <a class="dropdown-item" href="{{ url_for('registry.edit', registry_id=current_user.registry.id) }}">
-                                        <i class="fas fa-gift me-2"></i>Registry
+                                        <i class="fas fa-gift me-2"></i>My Registry
                                     </a>
                                 </li>
                             {% else %}
                                 <li>
                                     <a class="dropdown-item" href="{{ url_for('registry.create') }}">
-                                        <i class="fas fa-gift me-2"></i>Create Registry
+                                        <i class="fas fa-gift me-2"></i>My Registry
                                     </a>
                                 </li>
                             {% endif %}

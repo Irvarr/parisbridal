@@ -277,24 +277,23 @@ def create_wedding():
         return redirect(url_for('guest.wedding_details'))
 
     form = RegisterForm()
-    form.celebration_type.data = 'wedding'  # Pre-select wedding type
-
     if form.validate_on_submit():
-        wedding = Wedding(
-            user_id=current_user.id,
-            partner1_name=form.partner1_name.data,
-            partner2_name=form.partner2_name.data,
-            celebration_date=form.celebration_date.data,
-            celebration_location=form.celebration_location.data
-        )
         try:
+            wedding = Wedding(
+                user_id=current_user.id,
+                partner1_name=form.partner1_name.data,
+                partner2_name=form.partner2_name.data,
+                celebration_date=form.celebration_date.data,
+                celebration_location=form.celebration_location.data
+            )
             db.session.add(wedding)
             db.session.commit()
             flash('Wedding details created successfully!', 'success')
             return redirect(url_for('guest.wedding_details'))
         except Exception as e:
             db.session.rollback()
-            flash('An error occurred. Please try again.', 'error')
+            flash(f'An error occurred. Please try again. Error: {str(e)}', 'error')
+            return render_template('guest/create_wedding.html', form=form)
 
     return render_template('guest/create_wedding.html', form=form)
 
@@ -306,23 +305,22 @@ def create_quinceanera():
         return redirect(url_for('guest.quinceanera_details'))
 
     form = RegisterForm()
-    form.celebration_type.data = 'quinceanera'  # Pre-select quinceañera type
-
     if form.validate_on_submit():
-        quinceanera = Quinceanera(
-            user_id=current_user.id,
-            celebrant_name=form.celebrant_name.data,
-            celebration_date=form.celebration_date.data,
-            celebration_location=form.celebration_location.data
-        )
         try:
+            quinceanera = Quinceanera(
+                user_id=current_user.id,
+                celebrant_name=form.celebrant_name.data,
+                celebration_date=form.celebration_date.data,
+                celebration_location=form.celebration_location.data
+            )
             db.session.add(quinceanera)
             db.session.commit()
             flash('Quinceañera details created successfully!', 'success')
             return redirect(url_for('guest.quinceanera_details'))
         except Exception as e:
             db.session.rollback()
-            flash('An error occurred. Please try again.', 'error')
+            flash(f'An error occurred. Please try again. Error: {str(e)}', 'error')
+            return render_template('guest/create_quinceanera.html', form=form)
 
     return render_template('guest/create_quinceanera.html', form=form)
 
