@@ -4,68 +4,80 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
-                    <h2 class="card-title text-center mb-4">Our Wedding Details</h2>
+            {% if current_user.wedding %}
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title text-center mb-4">Our Wedding Details</h2>
 
-                    <div class="text-center mb-4">
-                        <h3 class="mb-0">{{ current_user.wedding.partner1_name }} & {{ current_user.wedding.partner2_name }}</h3>
-                        <p class="lead">are getting married!</p>
-                    </div>
+                        <div class="text-center mb-4">
+                            <h3 class="mb-0">{{ current_user.wedding.partner1_name }} & {{ current_user.wedding.partner2_name }}</h3>
+                            <p class="lead">are getting married!</p>
+                        </div>
 
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h4 class="card-title">
-                                        <i class="fas fa-calendar-alt me-2"></i>Date
-                                    </h4>
-                                    <p class="card-text">{{ current_user.wedding.celebration_date.strftime('%A, %B %d, %Y') }}</p>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h4 class="card-title">
+                                            <i class="fas fa-calendar-alt me-2"></i>Date
+                                        </h4>
+                                        <p class="card-text">{{ current_user.wedding.celebration_date.strftime('%A, %B %d, %Y') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h4 class="card-title">
+                                            <i class="fas fa-map-marker-alt me-2"></i>Location
+                                        </h4>
+                                        <p class="card-text">
+                                            {% if current_user.wedding.celebration_location %}
+                                                {{ current_user.wedding.celebration_location }}
+                                            {% else %}
+                                                <span class="text-muted">To be announced</span>
+                                            {% endif %}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-md-6">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h4 class="card-title">
-                                        <i class="fas fa-map-marker-alt me-2"></i>Location
-                                    </h4>
-                                    <p class="card-text">
-                                        {% if current_user.wedding.celebration_location %}
-                                            {{ current_user.wedding.celebration_location }}
-                                        {% else %}
-                                            <span class="text-muted">To be announced</span>
-                                        {% endif %}
-                                    </p>
-                                </div>
+                        <div class="text-center mt-4">
+                            <div class="btn-group">
+                                <a href="{{ url_for('guest.list_guests') }}" class="btn btn-primary">
+                                    <i class="fas fa-users me-2"></i>Guest List
+                                </a>
+                                <a href="{{ url_for('guest.wedding_party') }}" class="btn btn-primary">
+                                    <i class="fas fa-glass-cheers me-2"></i>Wedding Party
+                                </a>
+                                {% if current_user.registry %}
+                                    <a href="{{ url_for('registry.edit', registry_id=current_user.registry.id) }}" 
+                                       class="btn btn-outline-primary">
+                                        <i class="fas fa-gift me-2"></i>Our Registry
+                                    </a>
+                                {% else %}
+                                    <a href="{{ url_for('registry.create') }}" 
+                                       class="btn btn-outline-primary">
+                                        <i class="fas fa-gift me-2"></i>Create Registry
+                                    </a>
+                                {% endif %}
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="text-center mt-4">
-                        <div class="btn-group">
-                            <a href="{{ url_for('guest.list_guests') }}" class="btn btn-primary">
-                                <i class="fas fa-users me-2"></i>Guest List
-                            </a>
-                            <a href="{{ url_for('guest.wedding_party') }}" class="btn btn-primary">
-                                <i class="fas fa-glass-cheers me-2"></i>Wedding Party
-                            </a>
-                            {% if current_user.registry %}
-                                <a href="{{ url_for('registry.edit', registry_id=current_user.registry.id) }}" 
-                                   class="btn btn-outline-primary">
-                                    <i class="fas fa-gift me-2"></i>Our Registry
-                                </a>
-                            {% else %}
-                                <a href="{{ url_for('registry.create') }}" 
-                                   class="btn btn-outline-primary">
-                                    <i class="fas fa-gift me-2"></i>Create Registry
-                                </a>
-                            {% endif %}
                         </div>
                     </div>
                 </div>
-            </div>
+            {% else %}
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h2 class="card-title mb-4">Create Your Wedding</h2>
+                        <p class="lead mb-4">Start planning your special day by creating your wedding details.</p>
+                        <a href="{{ url_for('guest.create_wedding') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-heart me-2"></i>Create Wedding
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>

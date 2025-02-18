@@ -268,6 +268,63 @@ def update_meal_choice(guest_id):
     db.session.commit()
     return jsonify({'success': True})
 
+@guest.route('/create-wedding', methods=['GET', 'POST'])
+@login_required
+def create_wedding():
+    if current_user.wedding:
+        flash('You already have a wedding created.', 'warning')
+        return redirect(url_for('guest.wedding_details'))
+
+    form = RegisterForm()
+    form.celebration_type.data = 'wedding'  # Pre-select wedding type
+
+    if form.validate_on_submit():
+        wedding = Wedding(
+            user_id=current_user.id,
+            partner1_name=form.partner1_name.data,
+            partner2_name=form.partner2_name.data,
+            celebration_date=form.celebration_date.data,
+            celebration_location=form.celebration_location.data
+        )
+        try:
+            db.session.add(wedding)
+            db.session.commit()
+            flash('Wedding details created successfully!', 'success')
+            return redirect(url_for('guest.wedding_details'))
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred. Please try again.', 'error')
+
+    return render_template('guest/create_wedding.html', form=form)
+
+@guest.route('/create-quinceanera', methods=['GET', 'POST'])
+@login_required
+def create_quinceanera():
+    if current_user.quinceanera:
+        flash('You already have a quinceañera created.', 'warning')
+        return redirect(url_for('guest.quinceanera_details'))
+
+    form = RegisterForm()
+    form.celebration_type.data = 'quinceanera'  # Pre-select quinceañera type
+
+    if form.validate_on_submit():
+        quinceanera = Quinceanera(
+            user_id=current_user.id,
+            celebrant_name=form.celebrant_name.data,
+            celebration_date=form.celebration_date.data,
+            celebration_location=form.celebration_location.data
+        )
+        try:
+            db.session.add(quinceanera)
+            db.session.commit()
+            flash('Quinceañera details created successfully!', 'success')
+            return redirect(url_for('guest.quinceanera_details'))
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred. Please try again.', 'error')
+
+    return render_template('guest/create_quinceanera.html', form=form)
+
 @registry.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():

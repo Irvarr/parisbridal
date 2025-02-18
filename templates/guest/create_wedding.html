@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title text-center mb-4">Create Your Wedding</h2>
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.partner1_name.label(class="form-label") }}
+                        {{ form.partner1_name(class="form-control") }}
+                        {% for error in form.partner1_name.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.partner2_name.label(class="form-label") }}
+                        {{ form.partner2_name(class="form-control") }}
+                        {% for error in form.partner2_name.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.celebration_date.label(class="form-label") }}
+                        {{ form.celebration_date(class="form-control", type="date") }}
+                        {% for error in form.celebration_date.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.celebration_location.label(class="form-label") }}
+                        {{ form.celebration_location(class="form-control") }}
+                        {% for error in form.celebration_location.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Create Wedding</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
