@@ -17,6 +17,8 @@
                         <th>Name</th>
                         <th>Contact</th>
                         <th>Guests</th>
+                        <th>Table</th>
+                        <th>Meal</th>
                         <th>RSVP Status</th>
                         <th>Dietary Restrictions</th>
                         <th>Actions</th>
@@ -35,6 +37,20 @@
                                 {% endif %}
                             </td>
                             <td>{{ guest.number_of_guests }}</td>
+                            <td>
+                                {% if guest.table_assignment %}
+                                    {{ guest.table_assignment }}
+                                {% else %}
+                                    <span class="text-muted">Not assigned</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if guest.meal_choice %}
+                                    {{ guest.meal_choice|replace('_', ' ')|title }}
+                                {% else %}
+                                    <span class="text-muted">No preference</span>
+                                {% endif %}
+                            </td>
                             <td>
                                 <span class="badge bg-{{ 'success' if guest.rsvp_status == 'attending' 
                                     else 'danger' if guest.rsvp_status == 'not_attending' 

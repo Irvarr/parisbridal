@@ -65,6 +65,8 @@ class Guest(db.Model):
     number_of_guests = db.Column(db.Integer, default=1)
     dietary_restrictions = db.Column(db.Text)
     notes = db.Column(db.Text)
+    table_assignment = db.Column(db.String(50))  # For table assignments (e.g., "Table 1")
+    meal_choice = db.Column(db.String(20))  # For meal selection
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

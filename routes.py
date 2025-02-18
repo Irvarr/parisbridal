@@ -220,6 +220,8 @@ def add_guest():
             email=form.email.data,
             phone=form.phone.data,
             number_of_guests=form.number_of_guests.data,
+            table_assignment=form.table_assignment.data,
+            meal_choice=form.meal_choice.data,
             dietary_restrictions=form.dietary_restrictions.data,
             notes=form.notes.data
         )

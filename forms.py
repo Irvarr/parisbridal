@@ -52,6 +52,18 @@ class GuestForm(FlaskForm):
     email = StringField('Email', validators=[Optional(), Email()])
     phone = StringField('Phone', validators=[Optional(), Length(max=20)])
     number_of_guests = StringField('Number of Guests', validators=[DataRequired()], default=1)
+    table_assignment = StringField('Table Assignment', validators=[Optional(), Length(max=50)])
+    meal_choice = SelectField('Meal Preference',
+        choices=[
+            ('no_preference', 'No Preference'),
+            ('chicken', 'Chicken'),
+            ('salmon', 'Salmon'),
+            ('steak', 'Steak'),
+            ('vegan', 'Vegan')
+        ],
+        default='no_preference',
+        validators=[Optional()]
+    )
     dietary_restrictions = TextAreaField('Dietary Restrictions')
     notes = TextAreaField('Additional Notes')
 
