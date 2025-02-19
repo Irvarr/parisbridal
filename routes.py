@@ -193,11 +193,12 @@ def wedding_party(event_id=None):
     template = 'guest/wedding_party.html' if event_type == 'wedding' else 'guest/quinceanera_court.html'
 
     return render_template(template,
-                         event=wedding or quinceanera,
-                         bridesmaids=bridesmaids,
-                         groomsmen=groomsmen,
-                         sponsors=sponsors,
-                         event_type=event_type)
+                       event_id=event_id,
+                       event=wedding or quinceanera,
+                       bridesmaids=bridesmaids,
+                       groomsmen=groomsmen,
+                       sponsors=sponsors,
+                       event_type=event_type)
 
 @guest.route('/wedding-party/add/<int:event_id>', methods=['GET', 'POST'])
 @login_required
