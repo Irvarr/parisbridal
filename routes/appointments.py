@@ -32,7 +32,7 @@ def book():
             logging.error(f"Error booking appointment: {str(e)}")
             db.session.rollback()
             flash('An error occurred while booking your appointment. Please try again.', 'error')
-    
+
     return render_template('appointments/book.html', form=form)
 
 @appointments.route('/my-appointments')
@@ -40,7 +40,9 @@ def book():
 def my_appointments():
     appointments = Appointment.query.filter_by(user_id=current_user.id)\
         .order_by(Appointment.preferred_date.desc()).all()
-    return render_template('appointments/list.html', appointments=appointments)
+    return render_template('appointments/list.html', 
+                         appointments=appointments,
+                         now=datetime.utcnow())
 
 @appointments.route('/<int:appointment_id>/cancel', methods=['POST'])
 @login_required
@@ -49,7 +51,7 @@ def cancel_appointment(appointment_id):
     if appointment.user_id != current_user.id:
         flash('You are not authorized to cancel this appointment.', 'error')
         return redirect(url_for('appointments.my_appointments'))
-    
+
     appointment.status = 'cancelled'
     db.session.commit()
     flash('Your appointment has been cancelled.', 'success')

@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, request
 from flask_login import current_user, login_required
 from models import User, Registry, BlogPost
 from sqlalchemy import desc
+from datetime import datetime
 
 main = Blueprint('main', __name__)
 
@@ -38,7 +39,7 @@ def search():
 @main.route('/profile')
 @login_required
 def profile():
-    return render_template('profile.html')
+    return render_template('profile.html', now=datetime.utcnow())
 
 @main.route('/my-events')
 @login_required
