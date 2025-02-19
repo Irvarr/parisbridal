@@ -18,6 +18,7 @@ class User(UserMixin, db.Model):
     guests = db.relationship('Guest', backref='user', lazy=True)
     wedding_party = db.relationship('WeddingPartyMember', backref='user', lazy=True)
     blog_posts = db.relationship('BlogPost', backref='author', lazy=True)
+    appointments = db.relationship('Appointment', backref='user', lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -131,3 +132,20 @@ class BlogPost(db.Model):
 
     def __repr__(self):
         return f'<BlogPost {self.title}>'
+
+class Appointment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # Optional for non-registered users
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
+    service_type = db.Column(db.String(50), nullable=False)  # bridal_gown, quinceanera_dress, etc.
+    preferred_date = db.Column(db.DateTime, nullable=False)
+    alternate_date = db.Column(db.DateTime)
+    notes = db.Column(db.Text)
+    status = db.Column(db.String(20), default='pending')  # pending, confirmed, completed, cancelled
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Appointment {self.name} - {self.service_type}>'

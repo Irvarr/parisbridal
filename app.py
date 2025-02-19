@@ -34,7 +34,7 @@ with app.app_context():
     from models import (
         User, Registry, RegistryItem, Guest, 
         WeddingPartyMember, Wedding, Quinceanera,
-        GiftSuggestion, BlogPost
+        GiftSuggestion, BlogPost, Appointment
     )
 
     # Create all tables
@@ -52,6 +52,7 @@ from routes.registry import registry
 from routes.guest import guest
 from routes.services import services
 from routes.blog import blog
+from routes.appointments import appointments
 
 app.register_blueprint(main)
 app.register_blueprint(auth)
@@ -59,3 +60,4 @@ app.register_blueprint(registry)
 app.register_blueprint(guest)
 app.register_blueprint(services)
 app.register_blueprint(blog)
+app.register_blueprint(appointments)

@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import (
     StringField, PasswordField, DateField, TextAreaField, 
-    BooleanField, SelectField, FloatField, SearchField
+    BooleanField, SelectField, FloatField, SearchField, DateTimeField
 )
 from wtforms.validators import DataRequired, Email, Length, Optional, URL
 
@@ -119,3 +119,30 @@ class WeddingPartyMemberForm(FlaskForm):
         validators=[Optional()]
     )
     notes = TextAreaField('Notes')
+
+class AppointmentForm(FlaskForm):
+    name = StringField('Your Name', validators=[DataRequired(), Length(max=100)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    phone = StringField('Phone Number', validators=[DataRequired(), Length(max=20)])
+    service_type = SelectField('Service Type', 
+        choices=[
+            ('bridal_gown', 'Bridal Gown Consultation'),
+            ('quinceanera_dress', 'Quinceañera Dress Consultation'),
+            ('tuxedo', 'Tuxedo Fitting'),
+            ('alterations', 'Alterations'),
+            ('planning', 'Event Planning'),
+            ('general', 'General Inquiry')
+        ],
+        validators=[DataRequired()]
+    )
+    preferred_date = DateTimeField('Preferred Date and Time', 
+        format='%Y-%m-%dT%H:%M',
+        validators=[DataRequired()]
+    )
+    alternate_date = DateTimeField('Alternate Date and Time', 
+        format='%Y-%m-%dT%H:%M',
+        validators=[Optional()]
+    )
+    notes = TextAreaField('Additional Notes', 
+        validators=[Optional(), Length(max=500)]
+    )

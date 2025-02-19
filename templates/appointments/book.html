@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-4">Book an Appointment</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" class="needs-validation" novalidate>
+                        {{ form.csrf_token }}
+                        
+                        <div class="mb-3">
+                            <label for="name" class="form-label">{{ form.name.label }}</label>
+                            {{ form.name(class="form-control", placeholder="Enter your full name") }}
+                            {% if form.name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.name.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">{{ form.email.label }}</label>
+                            {{ form.email(class="form-control", placeholder="Enter your email address") }}
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.email.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">{{ form.phone.label }}</label>
+                            {{ form.phone(class="form-control", placeholder="Enter your phone number") }}
+                            {% if form.phone.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.phone.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="service_type" class="form-label">{{ form.service_type.label }}</label>
+                            {{ form.service_type(class="form-control") }}
+                            {% if form.service_type.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.service_type.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="preferred_date" class="form-label">{{ form.preferred_date.label }}</label>
+                            {{ form.preferred_date(class="form-control", type="datetime-local") }}
+                            {% if form.preferred_date.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.preferred_date.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="alternate_date" class="form-label">{{ form.alternate_date.label }}</label>
+                            {{ form.alternate_date(class="form-control", type="datetime-local") }}
+                            {% if form.alternate_date.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.alternate_date.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">{{ form.notes.label }}</label>
+                            {{ form.notes(class="form-control", rows="3", placeholder="Any special requests or additional information") }}
+                            {% if form.notes.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.notes.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-calendar-check me-2"></i>Request Appointment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
