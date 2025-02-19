@@ -4,11 +4,16 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
+            <div class="d-flex align-items-center mb-4">
+                <a href="{{ url_for('main.profile') }}" class="btn btn-outline-secondary me-3">
+                    <i class="fas fa-arrow-left me-2"></i>Back to My Account
+                </a>
+                <h2 class="mb-0">Wedding Details</h2>
+            </div>
+
             {% if wedding %}
                 <div class="card">
                     <div class="card-body">
-                        <h2 class="card-title text-center mb-4">Our Wedding Details</h2>
-
                         <div class="text-center mb-4">
                             <h3 class="mb-0">{{ wedding.partner1_name }} & {{ wedding.partner2_name }}</h3>
                             <p class="lead">are getting married!</p>
@@ -45,19 +50,13 @@
                         </div>
 
                         <div class="row g-4 mt-4 text-center">
-                            <div class="col-md-4 d-grid">
+                            <div class="col-md-6 d-grid">
                                 <a href="{{ url_for('guest.list_guests') }}" class="btn btn-primary">
                                     <i class="fas fa-users fa-2x mb-2"></i><br>
                                     Guest List
                                 </a>
                             </div>
-                            <div class="col-md-4 d-grid">
-                                <a href="{{ url_for('guest.wedding_party', event_id=wedding.id) }}" class="btn btn-primary">
-                                    <i class="fas fa-glass-cheers fa-2x mb-2"></i><br>
-                                    Wedding Party
-                                </a>
-                            </div>
-                            <div class="col-md-4 d-grid">
+                            <div class="col-md-6 d-grid">
                                 {% set registry = Registry.query.filter_by(event_id=wedding.id, event_type='wedding').first() %}
                                 {% if registry %}
                                     <a href="{{ url_for('registry.edit', registry_id=registry.id) }}" 
