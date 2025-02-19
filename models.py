@@ -93,6 +93,7 @@ class RegistryItem(db.Model):
 class Guest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    event_id = db.Column(db.Integer, nullable=False)  # Added event_id column
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120))
     phone = db.Column(db.String(20))
