@@ -1,0 +1,27 @@
+# Python-related files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+
+# Environment variables
+.env
+
+# Database
+*.sqlite3
+db.sqlite3
+migrations/
+
+# Logs
+logs/
+*.log
+
+# VS Code settings
+.vscode/
+
+# MacOS & Linux system files
+.DS_Store
