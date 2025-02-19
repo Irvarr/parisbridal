@@ -1,36 +1,34 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="suggestions-container">
+<div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Gift Suggestions for {{ registry.title }}</h2>
-        <a href="{{ url_for('registry.edit', registry_id=registry.id) }}" class="btn btn-outline-primary">
-            <i class="fas fa-arrow-left"></i> Back to Registry
-        </a>
+        <div class="d-flex align-items-center gap-3">
+            <a href="{{ url_for('registry.edit', registry_id=registry.id) }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Registry
+            </a>
+            <h2 class="mb-0">Gift Suggestions</h2>
+        </div>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-4">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         {% for suggestion in suggestions %}
         <div class="col">
             <div class="card h-100 suggestion-card">
                 <div class="card-body">
-                    <span class="badge bg-primary mb-2">{{ suggestion.category }}</span>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-primary">{{ suggestion.category }}</span>
+                        <span class="text-muted small">{{ suggestion.price_range }}</span>
+                    </div>
                     <h5 class="card-title">{{ suggestion.name }}</h5>
                     <p class="card-text">{{ suggestion.description }}</p>
-                    <p class="card-text">
-                        <small class="text-muted">
-                            Price Range: {{ suggestion.price_range }}
-                        </small>
-                    </p>
                 </div>
                 <div class="card-footer bg-transparent border-top-0">
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-outline-primary add-suggestion" 
-                                data-registry-id="{{ registry.id }}"
-                                data-suggestion-id="{{ suggestion.id }}">
-                            <i class="fas fa-plus"></i> Add to Registry
-                        </button>
-                    </div>
+                    <button class="btn btn-outline-primary w-100 add-suggestion" 
+                            data-registry-id="{{ registry.id }}"
+                            data-suggestion-id="{{ suggestion.id }}">
+                        <i class="fas fa-plus"></i> Add to Registry
+                    </button>
                 </div>
             </div>
         </div>
@@ -38,6 +36,7 @@
     </div>
 </div>
 
+<!-- Success Toast -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
     <div id="suggestionToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
@@ -59,30 +58,37 @@ document.addEventListener('DOMContentLoaded', function() {
     const toast = new bootstrap.Toast(document.getElementById('suggestionToast'));
 
     buttons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', async function() {
             const registryId = this.dataset.registryId;
             const suggestionId = this.dataset.suggestionId;
             const button = this;
 
-            fetch(`/registry/add-suggestion/${registryId}/${suggestionId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
+            try {
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+
+                const response = await fetch(`/registry/add-suggestion/${registryId}/${suggestionId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
                 if (data.success) {
-                    button.disabled = true;
                     button.innerHTML = '<i class="fas fa-check"></i> Added';
                     button.classList.replace('btn-outline-primary', 'btn-success');
                     toast.show();
+                } else {
+                    throw new Error(data.error || 'Failed to add item');
                 }
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Error:', error);
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-plus"></i> Add to Registry';
                 alert('Error adding item to registry');
-            });
+            }
         });
     });
 });
