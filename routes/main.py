@@ -1,12 +1,15 @@
 from flask import Blueprint, render_template, redirect, url_for, request
 from flask_login import current_user, login_required
-from models import User, Registry
+from models import User, Registry, BlogPost
+from sqlalchemy import desc
 
 main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    return render_template('index.html')
+    # Get recent published blog posts
+    blog_posts = BlogPost.query.filter_by(published=True).order_by(desc(BlogPost.created_at)).all()
+    return render_template('index.html', blog_posts=blog_posts)
 
 @main.route('/search')
 def search():

@@ -132,6 +132,36 @@
         </div>
     </section>
 
+    <!-- Blog Section -->
+    <section class="py-5 bg-white">
+        <div class="container">
+            <h2 class="text-center mb-4">Celebration Stories</h2>
+            <p class="lead text-center mb-5">
+                Get inspired by real weddings and quinceañeras
+            </p>
+            <div class="row g-4">
+                {% for post in blog_posts[:3] if post.published %}
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        {% if post.image_url %}
+                        <img src="{{ post.image_url }}" class="card-img-top" alt="{{ post.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <span class="badge bg-primary mb-2">{{ post.event_type.title() }}</span>
+                            <h5 class="card-title">{{ post.title }}</h5>
+                            <p class="card-text">{{ post.content[:150] }}...</p>
+                            <a href="{{ url_for('blog.view_post', post_id=post.id) }}" class="btn btn-outline-primary">Read More</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="text-center mt-4">
+                <a href="{{ url_for('blog.index') }}" class="btn btn-primary">View All Stories</a>
+            </div>
+        </div>
+    </section>
+
     {% if not current_user.is_authenticated %}
     <div class="mt-5">
         <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg me-3">Create Your Account</a>
