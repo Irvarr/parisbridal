@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from app import db
-from models import User, Wedding, Quinceanera
+from models import User
 from forms import RegisterForm, LoginForm
 
 auth = Blueprint('auth', __name__, url_prefix='/auth')
@@ -23,26 +23,6 @@ def register():
 
         try:
             db.session.add(user)
-            db.session.commit()
-
-            if form.celebration_type.data == 'wedding':
-                wedding = Wedding(
-                    user_id=user.id,
-                    partner1_name=form.partner1_name.data,
-                    partner2_name=form.partner2_name.data,
-                    celebration_date=form.celebration_date.data,
-                    celebration_location=form.celebration_location.data
-                )
-                db.session.add(wedding)
-            else:  # quinceanera
-                quinceanera = Quinceanera(
-                    user_id=user.id,
-                    celebrant_name=form.celebrant_name.data,
-                    celebration_date=form.celebration_date.data,
-                    celebration_location=form.celebration_location.data
-                )
-                db.session.add(quinceanera)
-
             db.session.commit()
             flash('Registration successful! Please login.', 'success')
             return redirect(url_for('auth.login'))
