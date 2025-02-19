@@ -2,15 +2,55 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="text-center mb-5">My Events</h1>
+    <h1 class="text-center mb-5">My Account</h1>
 
+    <!-- Upcoming Appointments Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="h4 mb-0">Upcoming Appointments</h2>
+                        <a href="{{ url_for('appointments.my_appointments') }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-calendar-check me-2"></i>View All Appointments
+                        </a>
+                    </div>
+                    {% if current_user.appointments %}
+                        {% set upcoming = current_user.appointments|selectattr('preferred_date', 'ge', now)|list %}
+                        {% if upcoming[:3] %}
+                            {% for appointment in upcoming[:3] %}
+                            <div class="mb-3">
+                                <h5 class="mb-1">{{ appointment.service_type|replace('_', ' ')|title }}</h5>
+                                <p class="mb-1">
+                                    <i class="fas fa-calendar-alt me-2"></i>{{ appointment.preferred_date.strftime('%B %d, %Y at %I:%M %p') }}
+                                    <span class="badge {% if appointment.status == 'confirmed' %}bg-success
+                                                    {% elif appointment.status == 'pending' %}bg-warning
+                                                    {% else %}bg-secondary{% endif %}">
+                                        {{ appointment.status|title }}
+                                    </span>
+                                </p>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted mb-0">No upcoming appointments</p>
+                        {% endif %}
+                    {% else %}
+                        <p class="text-muted mb-0">No appointments scheduled</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Events Section -->
+    <h2 class="mb-4">My Events</h2>
     <div class="row">
         {% if current_user.weddings %}
             {% for wedding in current_user.weddings %}
             <div class="col-md-6 mb-4">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h2 class="card-title">Wedding</h2>
+                        <h3 class="card-title h4">Wedding</h3>
                         <p class="lead">{{ wedding.partner1_name }} & {{ wedding.partner2_name }}</p>
                         <p><i class="fas fa-calendar-alt me-2"></i>{{ wedding.celebration_date.strftime('%B %d, %Y') }}</p>
                         {% if wedding.celebration_location %}
@@ -31,7 +71,7 @@
             <div class="col-md-6 mb-4">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h2 class="card-title">Quinceañera</h2>
+                        <h3 class="card-title h4">Quinceañera</h3>
                         <p class="lead">{{ quinceanera.celebrant_name }}</p>
                         <p><i class="fas fa-calendar-alt me-2"></i>{{ quinceanera.celebration_date.strftime('%B %d, %Y') }}</p>
                         {% if quinceanera.celebration_location %}

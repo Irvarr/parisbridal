@@ -144,7 +144,12 @@
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuDropdown">
                             <li>
                                 <a class="dropdown-item" href="{{ url_for('main.profile') }}">
-                                    <i class="fas fa-heart me-2"></i>My Profile
+                                    <i class="fas fa-user me-2"></i>My Account
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('appointments.my_appointments') }}">
+                                    <i class="fas fa-calendar-check me-2"></i>My Appointments
                                 </a>
                             </li>
                             <li>
